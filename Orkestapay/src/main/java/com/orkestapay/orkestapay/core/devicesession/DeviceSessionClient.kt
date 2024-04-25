@@ -2,6 +2,7 @@ package com.orkestapay.orkestapay.core.devicesession
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.orkestapay.orkestapay.core.networking.CoreConfig
@@ -12,6 +13,7 @@ import org.json.JSONObject
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
+private var hasSession = false
 internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -25,10 +27,15 @@ internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
             loadUrl("$urlString/script/device-session?merchant_id=${coreConfig.merchantId}&public_key=${coreConfig.publicKey}")
         }
         Timer().schedule(timerTask {
-            CoroutineScope(Dispatchers.Main).launch {
-                webView.reload()
+            if(!hasSession){
+                CoroutineScope(Dispatchers.Main).launch {
+                    webView.reload()
+                }
+            } else {
+                cancel()
             }
-        },10000)
+
+        },8000, 12000)
     }
 }
 
@@ -37,6 +44,7 @@ internal class JsInterface(private val callback: DeviceSessionListener) {
     fun receiveMessage(value: String) {
         val jsonObject = JSONObject(value)
         if(jsonObject.has("device_session_id")) {
+            hasSession = true
             callback.onSuccess(jsonObject.get("device_session_id").toString())
         }
     }

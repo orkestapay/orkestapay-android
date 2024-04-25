@@ -92,7 +92,8 @@ fun Buttons() {
             Spacer(Modifier.height(16.dp))
 
             Button(onClick = {
-                val card = Card("4111111111111111", "12", "2022", "123", "Hector Rdz", true)
+                val card = Card("4111111111111111", "12", "2025", "123", "Hector Rdz", true)
+
                 val paymentMethod = PaymentMethod("test card",null, deviceSessionId, PaymentMethodType.CARD, card)
                 orkestapay.createPaymentMethod(paymentMethod, object : PaymentMethodListener {
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {

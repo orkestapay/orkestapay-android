@@ -32,13 +32,10 @@ internal class OrkestapayAPI(private val coreConfig: CoreConfig) {
                 val error = json.decodeFromString<ErrorResponse>(httpResponse.body.toString())
                 var errorDescription = "${error.message ?: error.error}"
                 if(!error.validationErrors.isNullOrEmpty()){
-                    errorDescription += ": "
-                    error.validationErrors.forEachIndexed { index, fieldError ->
-                        errorDescription += fieldError.message
-                        if(index != error.validationErrors.size - 1){
-                            errorDescription += ", "
-                        }
+                    val errors = error.validationErrors.joinToString(", ") {
+                         it.message
                     }
+                    errorDescription += " [$errors]"
                 }
 
                 listener.onError(OrkestapayError(httpResponse.status, errorDescription))
