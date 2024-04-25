@@ -2,12 +2,8 @@ package com.orkestapay.orkestapay.core.devicesession
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.util.Log
 import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import com.orkestapay.orkestapay.core.networking.CoreConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +28,7 @@ internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
             CoroutineScope(Dispatchers.Main).launch {
                 webView.reload()
             }
-        },5000)
+        },10000)
     }
 }
 
