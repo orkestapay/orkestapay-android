@@ -12,7 +12,7 @@ Orkestapay Android create payment methods and get promotions
 
 ```groovy
 dependencies {
-  implementation 'com.orkestapay:orkestapay:0.0.1'
+  implementation 'com.orkestapay:orkestapay:0.0.2'
 }
 ```
 
