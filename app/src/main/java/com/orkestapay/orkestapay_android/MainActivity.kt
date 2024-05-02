@@ -28,6 +28,7 @@ import com.orkestapay.orkestapay.client.OrkestapayClient
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
 import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
 import com.orkestapay.orkestapay.client.enums.PaymentMethodType
+import com.orkestapay.orkestapay.client.model.BillingAddress
 import com.orkestapay.orkestapay.client.model.Card
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
@@ -90,7 +91,8 @@ fun Buttons() {
             Spacer(Modifier.height(16.dp))
 
             Button(onClick = {
-                val card = Card("4111111111111111", "12", "2025", "123", "Hector Rdz", true)
+                val card = Card("4111111111111111", "12", "2025", "123", "Héctor Rdz", true)
+                //val billingAddress = BillingAddress(null, null, null, null, null, "Av. Tecnológico 123", null, "Querétaro", "Querétaro", "MX", "76127")
                 val paymentMethod = PaymentMethod("test card",null, deviceSessionId, PaymentMethodType.CARD, card)
                 orkestapay.createPaymentMethod(paymentMethod, object : PaymentMethodListener {
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {
