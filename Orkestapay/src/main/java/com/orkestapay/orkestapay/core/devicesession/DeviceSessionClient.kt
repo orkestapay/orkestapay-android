@@ -35,7 +35,7 @@ internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
                 cancel()
             }
 
-        },8000, 12000)
+        },15000, 15000)
     }
 }
 
@@ -46,6 +46,10 @@ internal class JsInterface(private val callback: DeviceSessionListener) {
         if(jsonObject.has("device_session_id")) {
             hasSession = true
             callback.onSuccess(jsonObject.get("device_session_id").toString())
+        }
+        if(jsonObject.has("error")) {
+            hasSession = true
+            callback.onError(jsonObject.getJSONObject("error").get("message").toString())
         }
     }
 }

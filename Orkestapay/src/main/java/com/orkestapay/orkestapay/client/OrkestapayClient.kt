@@ -1,6 +1,7 @@
 package com.orkestapay.orkestapay.client
 
 import android.content.Context
+import android.util.Log
 import com.orkestapay.orkestapay.client.apirequest.OrkestapayAPI
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
 import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
@@ -20,7 +21,11 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
     private var orkestapayAPI: OrkestapayAPI
 
     init{
-        coreConfig = CoreConfig(merchantId, publicKey, when {
+        var id = merchantId
+        if (!merchantId.startsWith( "mid_")) {
+            id = "mid_$id"
+        }
+        coreConfig = CoreConfig(id, publicKey, when {
             isProductionMode -> Environment.PRODUCTION
             else -> Environment.SANDBOX
         })
