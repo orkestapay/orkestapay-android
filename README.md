@@ -13,14 +13,14 @@ Orkestapay Android create payment methods and get promotions
 build.gradle
 ```groovy
 dependencies {
-  implementation 'com.orkestapay:orkestapay:0.0.5'
+  implementation 'com.orkestapay:orkestapay:0.0.6'
 }
 ```
 
 build.gradle.kts
 ```groovy
 dependencies {
-  implementation("com.orkestapay:orkestapay:0.0.5")
+  implementation("com.orkestapay:orkestapay:0.0.6")
 }
 ```
 
