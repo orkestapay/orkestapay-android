@@ -8,8 +8,8 @@ data class PromotionsResponse(@SerialName("promotion_id") val promotionId: Strin
                               @SerialName("promotion_name") val promotionName : String,
                               val type: String,
                               val installments: List<Int>,
-                              @SerialName("issuer_id") val issuerId: String,
-                              @SerialName("issuer_name") val issuerName: String,
+                              @SerialName("issuer_id") val issuerId: String?,
+                              @SerialName("issuer_name") val issuerName: String?,
                               @SerialName("currency_code") val currencyCode: String?,
                               @SerialName("minimum_amount") val minimumAmount: Int?,
                               @SerialName("maximum_amount")  val maximumAmount: Int?)
