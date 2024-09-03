@@ -60,6 +60,7 @@ fun Buttons() {
     val orkestapay = OrkestapayClient("mid_mch_1a06356c660d4552b0d873b43d227071", "pk_test_vlvzqfkkycg4tpw9p340g63hc5zmwbbg", false)
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
+    var btnGoogleIsVisible by remember { mutableStateOf(false) }
 
     OrkestapayandroidTheme {
         Column(modifier = Modifier
@@ -122,6 +123,25 @@ fun Buttons() {
             }) {
                 Text(text = "Get promotions")
             }
+
+            Spacer(Modifier.height(16.dp))
+
+            if(btnGoogleIsVisible) {
+                Button(onClick = {
+                    orkestapay.getPromotions("477291", "MXN", "1000", object : PromotionsListener{
+                        override fun onSuccess(promotions: List<PromotionsResponse>) {
+                            Log.d("response", promotions.toString())
+                        }
+
+                        override fun onError(error: OrkestapayError) {
+                            Log.e("error", error.toString())
+                        }
+                    })
+                }) {
+                    Text(text = "Google Play")
+                }
+            }
+
         }
     }
 }
