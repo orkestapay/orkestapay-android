@@ -28,11 +28,12 @@ import com.orkestapay.orkestapay.client.OrkestapayClient
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
 import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
 import com.orkestapay.orkestapay.client.enums.PaymentMethodType
-import com.orkestapay.orkestapay.client.model.BillingAddress
 import com.orkestapay.orkestapay.client.model.Card
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.PromotionsResponse
+import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
 import com.orkestapay.orkestapay.core.networking.OrkestapayError
 import com.orkestapay.orkestapay_android.ui.theme.OrkestapayandroidTheme
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun Buttons() {
-    val orkestapay = OrkestapayClient("mid_mch_1a06356c660d4552b0d873b43d227071", "pk_test_vlvzqfkkycg4tpw9p340g63hc5zmwbbg", false)
+    val orkestapay = OrkestapayClient("mch_205991e69bef45949c7dadb3519b1ae8", "pk_test_grd7q3jrzb0yqih6pj6z3cznsl7c5ngb", false)
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
 
@@ -121,6 +122,30 @@ fun Buttons() {
                 })
             }) {
                 Text(text = "Get promotions")
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            Button(onClick = {
+                val clickToPay = ClickToPay("dd1cbff5-dc54-4665-a449-554d20b61c0a_dpa0","en_US","Testdpa0",
+                    listOf("mastercard","visa","amex"),"orkestapay.customer.02@yopmail.com", "John", "Doe", "+52","7712345678")
+                //val paymentMethod = PaymentMethod("test click to pay",null, deviceSessionId, PaymentMethodType.CLICK_TO_PAY, clickToPay = clickToPay)
+                orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
+                    override fun onSuccess(paymentId: String) {
+                       Log.d("onSuccess", paymentId)
+                    }
+
+                    override fun onClosed() {
+                        Log.d("onClosed", "closed")
+                    }
+
+                    override fun onError(error: String) {
+                        Log.d("onError", error)
+                    }
+
+                })
+            }) {
+                Text(text = "Click To Pay")
             }
         }
     }
