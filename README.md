@@ -13,14 +13,14 @@ Orkestapay Android create payment methods and get promotions
 build.gradle
 ```groovy
 dependencies {
-  implementation 'com.orkestapay:orkestapay:0.0.6'
+  implementation 'com.orkestapay:orkestapay:0.0.8'
 }
 ```
 
 build.gradle.kts
 ```groovy
 dependencies {
-  implementation("com.orkestapay:orkestapay:0.0.6")
+  implementation("com.orkestapay:orkestapay:0.0.8")
 }
 ```
 
@@ -94,22 +94,8 @@ orkestapay.getPromotions("123456", "MXN", "1000", object : PromotionsListener{
 
 Library contains a function to open checkout to Click to Pay.
 
-Click to Pay object receives:
-- srcDpaId (string)
-- dpaLocale (string)
-- dpaName (string)
-- cardBrands (string list)
-- email (string)
-- firstName (optional string)
-- lastName (optional string)
-- phoneCountryCode (optional string)
-- phoneNumber (optional string)
-- isSandbox (optional boolean)
-
 ```groovy
-val clickToPay = ClickToPay("dd1cbff5-dc54-4665-a449-554d20b61c0a_dpa0","en_US","Testdpa0",
-    listOf("mastercard","visa","amex"),"orkestapay.customer.02@yopmail.com", "John", "Doe", "+52","7712345678")
-orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
+orkestapay.clickToPayCheckout(ctx, object : ClickToPayListener{
     override fun onSuccess(payment: String) {
        Log.d("onSuccess", payment)
     }
