@@ -92,7 +92,19 @@ orkestapay.getPromotions("123456", "MXN", "1000", object : PromotionsListener{
 
 #### Click to Pay Checkout
 
-Library contains a function to open checkout to Click to Pay
+Library contains a function to open checkout to Click to Pay.
+
+Click to Pay object receives:
+- srcDpaId (string)
+- dpaLocale (string)
+- dpaName (string)
+- cardBrands (string list)
+- email (string)
+- firstName (optional string)
+- lastName (optional string)
+- phoneCountryCode (optional string)
+- phoneNumber (optional string)
+- isSandbox (optional boolean)
 
 ```groovy
 val clickToPay = ClickToPay("dd1cbff5-dc54-4665-a449-554d20b61c0a_dpa0","en_US","Testdpa0",
