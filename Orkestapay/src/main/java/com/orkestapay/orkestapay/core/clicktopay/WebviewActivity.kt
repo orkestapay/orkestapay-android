@@ -28,7 +28,6 @@ import java.io.Serializable
 class WebviewActivity : ComponentActivity() {
     lateinit var webView: WebView
     lateinit var loader: ProgressBar
-    private lateinit var clickToPay: ClickToPay
     private lateinit var merchantId: String
     private lateinit var publicKey: String
     private lateinit var url: String
@@ -39,7 +38,6 @@ class WebviewActivity : ComponentActivity() {
         }
 
     companion object {
-        const val CLICK_TO_PAY = "CLICK_TO_PAY"
         const val MERCHANT_ID = "MERCHANT_ID"
         const val PUBLIC_KEY = "PUBLIC_KEY"
         const val URL = "URL"
@@ -58,7 +56,6 @@ class WebviewActivity : ComponentActivity() {
             insets
         }
 
-        clickToPay = getSerializable(this, CLICK_TO_PAY, ClickToPay::class.java)
         merchantId = intent.getStringExtra(MERCHANT_ID)!!
         publicKey = intent.getStringExtra(PUBLIC_KEY)!!
         url = intent.getStringExtra(URL)!!
@@ -83,6 +80,8 @@ class WebviewActivity : ComponentActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadCheckout(javascriptToInject: String? = null) {
+        val clickToPay = ClickToPay("dd1cbff5-dc54-4665-a449-554d20b61c0a_dpa0","en_US","Testdpa0",
+            listOf("mastercard","visa","amex"),"orkestapay.customer.02@yopmail.com", "John", "Doe", "+52","7712345678")
         var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
         //var urlCheckout = "https://checkout.dev.orkestapay.com/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
         urlCheckout = addQueryParamFromList(urlCheckout, "cardBrands", clickToPay.cardBrands)
