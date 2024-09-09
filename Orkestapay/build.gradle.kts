@@ -3,7 +3,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 
 val groupId by extra { "com.orkestapay" }
 val artifactId by extra { "orkestapay" }
-val libraryVersion by extra { "0.0.6" }
+val libraryVersion by extra { "0.0.7" }
 
 plugins {
     alias(libs.plugins.androidLibrary)
@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
