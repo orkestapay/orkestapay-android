@@ -20,9 +20,6 @@ internal class OrkestapayAPI(private val coreConfig: CoreConfig) {
         if(paymentMethod.customerId.isNullOrEmpty() && paymentMethod.deviceSessionId.isNullOrEmpty()) {
             listener.onError(OrkestapayError(-1, "It is necessary to send customerId or deviceSessionId"))
         }
-        if(paymentMethod.card == null && paymentMethod.clickToPay == null) {
-            listener.onError(OrkestapayError(-2, "It is necessary to send card object or clickToPay object"))
-        }
         val body = Json.encodeToString(paymentMethod)
         val restRequest = RestRequest("/v1/payment-methods", HttpMethod.POST, body)
         val httpResponse = networkingClient.send(restRequest)

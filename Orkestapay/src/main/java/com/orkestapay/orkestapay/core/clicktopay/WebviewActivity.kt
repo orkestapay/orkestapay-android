@@ -21,7 +21,6 @@ import com.orkestapay.orkestapay.client.enums.ClickToPayError
 import com.orkestapay.orkestapay.client.enums.ClickToPayEvent
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
 import com.orkestapay.orkestapay.core.networking.NetworkUtils
-import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.Serializable
 
@@ -32,7 +31,7 @@ class WebviewActivity : ComponentActivity() {
     private lateinit var clickToPay: ClickToPay
     private lateinit var merchantId: String
     private lateinit var publicKey: String
-    private lateinit var isSandbox: String
+    private lateinit var url: String
 
     val callback: ClickToPayListener?
         get() {
@@ -43,7 +42,7 @@ class WebviewActivity : ComponentActivity() {
         const val CLICK_TO_PAY = "CLICK_TO_PAY"
         const val MERCHANT_ID = "MERCHANT_ID"
         const val PUBLIC_KEY = "PUBLIC_KEY"
-        const val IS_SANDBOX = "IS_SANDBOX"
+        const val URL = "URL"
 
         private var listener: ClickToPayListener? = null
         fun setListener(callback: ClickToPayListener) {
@@ -62,7 +61,7 @@ class WebviewActivity : ComponentActivity() {
         clickToPay = getSerializable(this, CLICK_TO_PAY, ClickToPay::class.java)
         merchantId = intent.getStringExtra(MERCHANT_ID)!!
         publicKey = intent.getStringExtra(PUBLIC_KEY)!!
-        isSandbox = intent.getStringExtra(IS_SANDBOX)!!
+        url = intent.getStringExtra(URL)!!
 
         if (!NetworkUtils(this).hasInternet){
             callback?.onError(ClickToPayError.NO_INTERNET_CONNECTION.message)
@@ -84,14 +83,16 @@ class WebviewActivity : ComponentActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadCheckout(javascriptToInject: String? = null) {
-        var urlCheckout = "https://checkout.dev.orkestapay.com/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}&isSandbox=${isSandbox}"
+        var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
+        //var urlCheckout = "https://checkout.dev.orkestapay.com/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
         urlCheckout = addQueryParamFromList(urlCheckout, "cardBrands", clickToPay.cardBrands)
         urlCheckout = addQueryParam(urlCheckout, "phoneCountryCode", clickToPay.phoneCountryCode)
         urlCheckout = addQueryParam(urlCheckout, "phoneNumber", clickToPay.phoneNumber)
         urlCheckout = addQueryParam(urlCheckout, "firstName", clickToPay.firstName)
         urlCheckout = addQueryParam(urlCheckout, "lastName", clickToPay.lastName)
+        urlCheckout = addQueryParam(urlCheckout, "isSandbox", clickToPay.isSandbox.toString())
 
-        Log.d("url checkout", urlCheckout)
+        //Log.d("url checkout", urlCheckout)
 
         webView.settings.apply {
             domStorageEnabled = true
@@ -109,7 +110,6 @@ class WebviewActivity : ComponentActivity() {
 
                 loader.visibility = View.GONE
                 view?.visibility = View.VISIBLE
-                callback?.onSuccess("success")
             }
 
             override fun onReceivedError(
@@ -158,17 +158,11 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
     fun receiveMessage(value: String) {
         try {
             val jsonObject = JSONObject(value)
-            Log.d("message", jsonObject.toString())
+            //Log.d("message", jsonObject.toString())
 
             val status = jsonObject["status"] as? String
-            var data: Json? = null
-            var error: Json? = null
-            if (jsonObject.has("data")) {
-                data = jsonObject["data"] as? Json
-            }
-            if (jsonObject.has("error")) {
-                data = jsonObject["error"] as? Json
-            }
+            val data: JSONObject?
+            val error: JSONObject?
 
             if (status == null) {
                 return
@@ -178,10 +172,12 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
 
             when (event) {
                 ClickToPayEvent.COMPLETE -> {
+                    data = jsonObject.getJSONObject("data")
                     callback.onSuccess(data.toString())
                 }
 
                 ClickToPayEvent.ERROR -> {
+                    error = jsonObject.getJSONObject("error")
                     callback.onError(error.toString())
                 }
                 ClickToPayEvent.CANCEL -> {

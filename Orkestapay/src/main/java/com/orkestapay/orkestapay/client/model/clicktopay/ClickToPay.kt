@@ -10,4 +10,5 @@ data class ClickToPay(val srcDpaId: String,
                       val firstName: String? = null,
                       val lastName: String? = null,
                       val phoneCountryCode: String? = null,
-                      val phoneNumber: String? = null): Serializable
+                      val phoneNumber: String? = null,
+                      val isSandbox: Boolean? = null): Serializable

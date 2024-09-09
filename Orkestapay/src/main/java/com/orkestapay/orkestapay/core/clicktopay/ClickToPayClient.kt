@@ -14,7 +14,7 @@ internal class ClickToPayClient(private val coreConfig: CoreConfig) {
             putExtra(WebviewActivity.CLICK_TO_PAY, clickToPay)
             putExtra(WebviewActivity.MERCHANT_ID, coreConfig.merchantId)
             putExtra(WebviewActivity.PUBLIC_KEY, coreConfig.publicKey)
-            putExtra(WebviewActivity.IS_SANDBOX, (coreConfig.environment == Environment.SANDBOX).toString())
+            putExtra(WebviewActivity.URL, coreConfig.environment.checkoutUrl)
         }
         context.startActivity(intent)
     }
