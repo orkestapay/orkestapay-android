@@ -95,9 +95,10 @@ orkestapay.getPromotions("123456", "MXN", "1000", object : PromotionsListener{
 Library contains a function to open checkout to Click to Pay.
 
 ```groovy
-orkestapay.clickToPayCheckout(ctx, object : ClickToPayListener{
-    override fun onSuccess(payment: String) {
-       Log.d("onSuccess", payment)
+val clickToPay = ClickToPay("customer@mail.com", "John", "Doe", "52", "4411223344", true)
+orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
+    override fun onSuccess(paymentMethod: String) {
+       Log.d("onSuccess", paymentMethod)
     }
 
     override fun onClosed() {
