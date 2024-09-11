@@ -54,7 +54,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         }
     }
 
-    fun clickToPayCheckout(context: Context, listener: ClickToPayListener){
-        clickToPayClient.openClickToPayCheckout(context, listener)
+    fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, listener: ClickToPayListener){
+        clickToPayClient.openClickToPayCheckout(context, clickToPay, listener)
     }
 }

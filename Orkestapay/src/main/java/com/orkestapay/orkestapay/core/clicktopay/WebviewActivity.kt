@@ -31,6 +31,8 @@ class WebviewActivity : ComponentActivity() {
     private lateinit var merchantId: String
     private lateinit var publicKey: String
     private lateinit var url: String
+    private lateinit var clickToPay: ClickToPay
+    private var hasParam = false
 
     val callback: ClickToPayListener?
         get() {
@@ -41,6 +43,7 @@ class WebviewActivity : ComponentActivity() {
         const val MERCHANT_ID = "MERCHANT_ID"
         const val PUBLIC_KEY = "PUBLIC_KEY"
         const val URL = "URL"
+        const val CLICK_TO_PAY = "CLICK_TO_PAY"
 
         private var listener: ClickToPayListener? = null
         fun setListener(callback: ClickToPayListener) {
@@ -56,6 +59,7 @@ class WebviewActivity : ComponentActivity() {
             insets
         }
 
+        clickToPay = getSerializable(this, CLICK_TO_PAY, ClickToPay::class.java)
         merchantId = intent.getStringExtra(MERCHANT_ID)!!
         publicKey = intent.getStringExtra(PUBLIC_KEY)!!
         url = intent.getStringExtra(URL)!!
@@ -74,17 +78,14 @@ class WebviewActivity : ComponentActivity() {
 
         webView = findViewById(R.id.click_to_pay_web_view)
         loader = findViewById(R.id.loader)
-        loadCheckout("")
+        loadCheckout()
 
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    fun loadCheckout(javascriptToInject: String? = null) {
-        val clickToPay = ClickToPay("dd1cbff5-dc54-4665-a449-554d20b61c0a_dpa0","en_US","Testdpa0",
-            listOf("mastercard","visa","amex"),"orkestapay.customer.02@yopmail.com", "John", "Doe", "+52","7712345678")
-        var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
-        //var urlCheckout = "https://checkout.dev.orkestapay.com/integrations/click2pay/#/checkout/${merchantId}/${publicKey}/${clickToPay.srcDpaId}/${clickToPay.dpaLocale}?dpaName=${clickToPay.dpaName}&email=${clickToPay.email}"
-        urlCheckout = addQueryParamFromList(urlCheckout, "cardBrands", clickToPay.cardBrands)
+    fun loadCheckout() {
+        var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}"
+        urlCheckout = addQueryParam(urlCheckout, "email", clickToPay.email)
         urlCheckout = addQueryParam(urlCheckout, "phoneCountryCode", clickToPay.phoneCountryCode)
         urlCheckout = addQueryParam(urlCheckout, "phoneNumber", clickToPay.phoneNumber)
         urlCheckout = addQueryParam(urlCheckout, "firstName", clickToPay.firstName)
@@ -123,14 +124,16 @@ class WebviewActivity : ComponentActivity() {
                 }
             }
         }
-        //setupWebChromeClient(webView)
         webView.loadUrl(urlCheckout)
     }
 
     private fun addQueryParam(url: String, name: String, value: String?): String {
         var newUrl = url
+
         if(!value.isNullOrEmpty()) {
-            newUrl += "&${name}=${value}"
+            newUrl += if (hasParam) "&" else "?"
+            newUrl +=  "${name}=${value}"
+            hasParam = true
         }
         return newUrl
     }
@@ -142,6 +145,7 @@ class WebviewActivity : ComponentActivity() {
         }
         return newUrl
     }
+
     @Suppress("UNCHECKED_CAST")
     private fun <T : Serializable?> getSerializable(activity: Activity, name: String, clazz: Class<T>): T
     {
