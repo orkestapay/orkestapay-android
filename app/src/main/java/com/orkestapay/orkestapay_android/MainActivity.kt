@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun Buttons() {
-    val orkestapay = OrkestapayClient("mch_205991e69bef45949c7dadb3519b1ae8", "pk_test_grd7q3jrzb0yqih6pj6z3cznsl7c5ngb", false)
+    val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
 
@@ -127,7 +127,8 @@ fun Buttons() {
             Spacer(Modifier.height(20.dp))
 
             Button(onClick = {
-                orkestapay.clickToPayCheckout(ctx, object : ClickToPayListener{
+                val clickToPay = ClickToPay("orkestapay.customer2@yopmail.com", "John", "Doe", "52", "4411223344", true)
+                orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
                     override fun onSuccess(payment: String) {
                        Log.d("onSuccess", payment)
                     }
