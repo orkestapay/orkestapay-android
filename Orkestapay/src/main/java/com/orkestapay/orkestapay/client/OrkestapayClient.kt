@@ -7,6 +7,9 @@ import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
 import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
+import com.orkestapay.orkestapay.core.clicktopay.ClickToPayClient
+import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionClient
 import com.orkestapay.orkestapay.core.networking.CoreConfig
@@ -18,6 +21,7 @@ import kotlinx.coroutines.launch
 class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: Boolean ) {
     private var coreConfig: CoreConfig
     private var deviceSessionClient: DeviceSessionClient
+    private var clickToPayClient: ClickToPayClient
     private var orkestapayAPI: OrkestapayAPI
 
     init{
@@ -30,6 +34,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
             else -> Environment.SANDBOX
         })
         deviceSessionClient = DeviceSessionClient(coreConfig)
+        clickToPayClient = ClickToPayClient(coreConfig)
         orkestapayAPI = OrkestapayAPI(coreConfig)
     }
 
@@ -47,5 +52,9 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         CoroutineScope(Dispatchers.IO).launch {
             orkestapayAPI.getPromotions(binNumber, currency, totalAmount, listener)
         }
+    }
+
+    fun clickToPayCheckout(context: Context, listener: ClickToPayListener){
+        clickToPayClient.openClickToPayCheckout(context, listener)
     }
 }
