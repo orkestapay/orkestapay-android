@@ -19,8 +19,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.orkestapay.R
 import com.orkestapay.orkestapay.client.enums.ClickToPayError
 import com.orkestapay.orkestapay.client.enums.ClickToPayEvent
+import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
 import com.orkestapay.orkestapay.core.networking.NetworkUtils
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.Serializable
 
@@ -176,7 +178,10 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
             when (event) {
                 ClickToPayEvent.COMPLETE -> {
                     data = jsonObject.getJSONObject("data")
-                    callback.onSuccess(data.toString())
+                    val paymentMethod = Json{
+                        ignoreUnknownKeys = true
+                    }.decodeFromString<PaymentMethodResponse>(data.toString())
+                    callback.onSuccess(paymentMethod)
                 }
 
                 ClickToPayEvent.ERROR -> {

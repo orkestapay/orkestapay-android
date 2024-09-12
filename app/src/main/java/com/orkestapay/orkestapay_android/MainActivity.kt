@@ -127,10 +127,10 @@ fun Buttons() {
             Spacer(Modifier.height(20.dp))
 
             Button(onClick = {
-                val clickToPay = ClickToPay("orkestapay.customer2@yopmail.com", "John", "Doe", "52", "4411223344", true)
+                val clickToPay = ClickToPay("orkestapay.user6@yopmail.com", "John", "Doe", "52", "4411223344", true)
                 orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
-                    override fun onSuccess(payment: String) {
-                       Log.d("onSuccess", payment)
+                    override fun onSuccess(paymentMethod: PaymentMethodResponse) {
+                       Log.d("onSuccess", paymentMethod.toString())
                     }
 
                     override fun onClosed() {
