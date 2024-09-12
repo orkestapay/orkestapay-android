@@ -182,6 +182,7 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
                         ignoreUnknownKeys = true
                     }.decodeFromString<PaymentMethodResponse>(data.toString())
                     callback.onSuccess(paymentMethod)
+                    activity.finish()
                 }
 
                 ClickToPayEvent.ERROR -> {
