@@ -12,6 +12,8 @@ import com.orkestapay.orkestapay.core.clicktopay.ClickToPayClient
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionClient
+import com.orkestapay.orkestapay.core.googlepay.GooglePayCallback
+import com.orkestapay.orkestapay.core.googlepay.GooglePayClient
 import com.orkestapay.orkestapay.core.networking.CoreConfig
 import com.orkestapay.orkestapay.core.networking.Environment
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +24,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
     private var coreConfig: CoreConfig
     private var deviceSessionClient: DeviceSessionClient
     private var clickToPayClient: ClickToPayClient
+    private var googlePayClient: GooglePayClient
     private var orkestapayAPI: OrkestapayAPI
 
     init{
@@ -36,6 +39,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         deviceSessionClient = DeviceSessionClient(coreConfig)
         clickToPayClient = ClickToPayClient(coreConfig)
         orkestapayAPI = OrkestapayAPI(coreConfig)
+        googlePayClient = GooglePayClient(coreConfig)
     }
 
     fun creteDeviceSession(context: Context, callback: DeviceSessionListener){
@@ -57,4 +61,13 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
     fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, listener: ClickToPayListener){
         clickToPayClient.openClickToPayCheckout(context, clickToPay, listener)
     }
+
+    fun googlePaySetup(context: Context, callback: GooglePayCallback){
+        googlePayClient.googlePaySetup(context, callback)
+    }
+
+    fun googlePayCheckout(){
+        googlePayClient.googlePayCheckout()
+    }
+
 }

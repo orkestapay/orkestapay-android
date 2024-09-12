@@ -35,8 +35,11 @@ import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.PromotionsResponse
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
+import com.orkestapay.orkestapay.core.googlepay.GooglePayUtil
 import com.orkestapay.orkestapay.core.networking.OrkestapayError
 import com.orkestapay.orkestapay_android.ui.theme.OrkestapayandroidTheme
+import com.google.pay.button.PayButton
+import com.orkestapay.orkestapay.core.googlepay.GooglePayCallback
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +65,26 @@ fun Buttons() {
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
     var btnGoogleIsVisible by remember { mutableStateOf(false) }
+
+    orkestapay.googlePaySetup(ctx, object : GooglePayCallback{
+        override fun onReady(isReady: Boolean) {
+            Log.d("onReady", isReady.toString())
+            btnGoogleIsVisible = isReady
+        }
+
+        override fun onSuccess(paymentMethod: String) {
+            Log.d("onSuccess", paymentMethod)
+        }
+
+        override fun onCancel() {
+            Log.d("onCancel", "onCancel")
+        }
+
+        override fun onError(error: String) {
+            Log.d("onError", "onError")
+        }
+
+    })
 
     OrkestapayandroidTheme {
         Column(modifier = Modifier
@@ -128,19 +151,14 @@ fun Buttons() {
             Spacer(Modifier.height(16.dp))
 
             if(btnGoogleIsVisible) {
-                Button(onClick = {
-                    orkestapay.getPromotions("477291", "MXN", "1000", object : PromotionsListener{
-                        override fun onSuccess(promotions: List<PromotionsResponse>) {
-                            Log.d("response", promotions.toString())
-                        }
-
-                        override fun onError(error: OrkestapayError) {
-                            Log.e("error", error.toString())
-                        }
-                    })
-                }) {
-                    Text(text = "Google Play")
-                }
+                PayButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onClick = {
+                              orkestapay.googlePayCheckout()
+                    },
+                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods.toString()
+                )
             }
 
             Spacer(Modifier.height(20.dp))

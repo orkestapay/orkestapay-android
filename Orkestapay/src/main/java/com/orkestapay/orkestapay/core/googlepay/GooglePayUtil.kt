@@ -32,11 +32,6 @@ object GooglePayUtil {
                 "parameters", JSONObject()
                     .put("allowedAuthMethods", allowedCardAuthMethods)
                     .put("allowedCardNetworks", allowedCardNetworks)
-                    /*.put("billingAddressRequired", true)
-                    .put(
-                        "billingAddressParameters", JSONObject()
-                            .put("format", "FULL")
-                    )*/
             )
 
     private val cardPaymentMethod: JSONObject = baseCardPaymentMethod()
@@ -77,13 +72,6 @@ object GooglePayUtil {
             .put("allowedPaymentMethods", allowedPaymentMethods)
             .put("transactionInfo", getTransactionInfo(priceCents.centsToString()))
             .put("merchantInfo", merchantInfo)
-            /*.put("shippingAddressRequired", true)
-            .put(
-                "shippingAddressParameters", JSONObject()
-                    .put("phoneNumberRequired", false)
-                    .put("allowedCountryCodes", JSONArray(listOf("US", "GB")))
-            )*/
-
 }
 
 fun Long.centsToString() = BigDecimal(this)

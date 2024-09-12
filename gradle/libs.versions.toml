@@ -1,12 +1,15 @@
 [versions]
 agp = "8.3.2"
 awaitilityKotlin = "4.2.1"
+composePayButton = "1.0.0"
+concurrentFuturesKtx = "1.2.0"
 core = " 1.5.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
+kotlinxCoroutinesPlayServices = "1.7.3"
 kotlinxSerializationJson = "1.6.0"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.7.0"
@@ -22,9 +25,11 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 
 [libraries]
+androidx-concurrent-futures-ktx = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesKtx" }
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitilityKotlin" }
+compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -39,6 +44,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
