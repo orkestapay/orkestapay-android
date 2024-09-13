@@ -4,7 +4,7 @@ import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 
 interface GooglePayCallback {
     fun onReady(isReady: Boolean)
-    fun onSuccess(paymentMethod: String)
+    fun onSuccess(paymentMethod: PaymentMethodResponse)
     fun onCancel()
     fun onError(error: String)
 }

@@ -16,10 +16,13 @@ object GooglePayUtil {
         .put("apiVersion", 2)
         .put("apiVersionMinor", 0)
 
-    private val gatewayTokenizationSpecification: JSONObject =
+    private fun gatewayTokenizationSpecification(gateway: String, merchantId: String): JSONObject =
         JSONObject()
             .put("type", "PAYMENT_GATEWAY")
-            .put("parameters", JSONObject(GooglePayConstants.PAYMENT_GATEWAY_TOKENIZATION_PARAMETERS))
+            .put("parameters", JSONObject(mapOf(
+                "gateway" to gateway,
+                "gatewayMerchantId" to merchantId
+            )))
 
     private val allowedCardNetworks = JSONArray(GooglePayConstants.SUPPORTED_NETWORKS)
 
@@ -34,10 +37,10 @@ object GooglePayUtil {
                     .put("allowedCardNetworks", allowedCardNetworks)
             )
 
-    private val cardPaymentMethod: JSONObject = baseCardPaymentMethod()
-        .put("tokenizationSpecification", gatewayTokenizationSpecification)
+    private fun cardPaymentMethod(gateway: String, merchantId: String): JSONObject = baseCardPaymentMethod()
+        .put("tokenizationSpecification", gatewayTokenizationSpecification(gateway, merchantId))
 
-    val allowedPaymentMethods: JSONArray = JSONArray().put(cardPaymentMethod)
+    fun allowedPaymentMethods(gateway: String, merchantId: String): JSONArray = JSONArray().put(cardPaymentMethod(gateway, merchantId))
 
     fun isReadyToPayRequest(): JSONObject? =
         try {
@@ -48,30 +51,23 @@ object GooglePayUtil {
         }
 
 
-    private val merchantInfo: JSONObject =
-        JSONObject().put("merchantName", "Example Merchant")
+    private fun merchantInfo(merchantName: String): JSONObject =
+        JSONObject().put("merchantName", merchantName)
 
-    fun createPaymentsClient(context: Context): PaymentsClient {
-        val walletOptions = Wallet.WalletOptions.Builder()
-            .setEnvironment(GooglePayConstants.PAYMENTS_ENVIRONMENT)
-            .build()
 
-        return Wallet.getPaymentsClient(context, walletOptions)
-    }
-
-    private fun getTransactionInfo(price: String): JSONObject =
+    private fun getTransactionInfo(price: String, currencyCode: String, countryCode: String): JSONObject =
         JSONObject()
             .put("totalPrice", price)
             .put("totalPriceStatus", "FINAL")
             .put("totalPriceLabel", "TOTAL")
-            .put("countryCode", GooglePayConstants.COUNTRY_CODE)
-            .put("currencyCode", GooglePayConstants.CURRENCY_CODE)
+            .put("countryCode", countryCode)
+            .put("currencyCode", currencyCode)
 
-    fun getPaymentDataRequest(priceCents: Long): JSONObject =
+    fun getPaymentDataRequest(amount: String, currencyCode: String, countryCode: String, gateway: String, merchantId: String, merchantName: String): JSONObject =
         baseRequest
-            .put("allowedPaymentMethods", allowedPaymentMethods)
-            .put("transactionInfo", getTransactionInfo(priceCents.centsToString()))
-            .put("merchantInfo", merchantInfo)
+            .put("allowedPaymentMethods", allowedPaymentMethods(gateway, merchantId) )
+            .put("transactionInfo", getTransactionInfo(amount, currencyCode, countryCode))
+            .put("merchantInfo", merchantInfo(merchantName))
 }
 
 fun Long.centsToString() = BigDecimal(this)

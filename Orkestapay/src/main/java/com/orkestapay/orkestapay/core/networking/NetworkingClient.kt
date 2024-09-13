@@ -1,5 +1,6 @@
 package com.orkestapay.orkestapay.core.networking
 
+import android.util.Log
 import java.net.URL
 import java.util.Locale
 
@@ -31,7 +32,6 @@ internal class NetworkingClient internal constructor(
 
         val credentials = "${configuration.merchantId}:${configuration.publicKey}"
         headers["Authorization"] = "Basic ${credentials.base64encoded()}"
-
         if (method == HttpMethod.POST) {
             headers["Content-Type"] = "application/json"
         }

@@ -4,8 +4,6 @@ import com.google.android.gms.wallet.WalletConstants
 
 object GooglePayConstants {
 
-    const val PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST
-
     val SUPPORTED_NETWORKS = listOf(
         "AMEX",
         "DISCOVER",
@@ -16,10 +14,6 @@ object GooglePayConstants {
     val SUPPORTED_METHODS = listOf(
         "PAN_ONLY",
         "CRYPTOGRAM_3DS")
-
-    const val COUNTRY_CODE = "US"
-
-    const val CURRENCY_CODE = "USD"
 
     private const val PAYMENT_GATEWAY_TOKENIZATION_NAME = "orkestapay"
 

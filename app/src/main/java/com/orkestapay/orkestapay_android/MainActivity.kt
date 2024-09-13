@@ -39,6 +39,7 @@ import com.orkestapay.orkestapay.core.googlepay.GooglePayUtil
 import com.orkestapay.orkestapay.core.networking.OrkestapayError
 import com.orkestapay.orkestapay_android.ui.theme.OrkestapayandroidTheme
 import com.google.pay.button.PayButton
+import com.orkestapay.orkestapay.client.model.googlepay.GooglePayData
 import com.orkestapay.orkestapay.core.googlepay.GooglePayCallback
 
 class MainActivity : ComponentActivity() {
@@ -61,7 +62,9 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun Buttons() {
-    val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
+    //uat click to pay
+    //val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
+    val orkestapay = OrkestapayClient("mch_e33f6f87ec5b47d1a41519f4ed3fcf53", "pk_test_vywzkgf0im78h6fpdr22nx322x98ae2z", false)
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
     var btnGoogleIsVisible by remember { mutableStateOf(false) }
@@ -72,8 +75,8 @@ fun Buttons() {
             btnGoogleIsVisible = isReady
         }
 
-        override fun onSuccess(paymentMethod: String) {
-            Log.d("onSuccess", paymentMethod)
+        override fun onSuccess(paymentMethod: PaymentMethodResponse) {
+            Log.d("onSuccess", paymentMethod.toString())
         }
 
         override fun onCancel() {
@@ -155,9 +158,11 @@ fun Buttons() {
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                              orkestapay.googlePayCheckout()
+                        val googlePayData = GooglePayData("5", "MXN", "MX", true)
+                        orkestapay.googlePayCheckout(googlePayData)
                     },
-                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods.toString()
+                    //allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData.properties.gateway, orkestapay.googlePaymentMethodData.properties.merchantId).toString()
+                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods("orkestapay", "mch_e33f6f87ec5b47d1a41519f4ed3fcf53").toString()
                 )
             }
 
