@@ -69,7 +69,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
     }
 
     fun googlePaySetup(context: Context, callback: GooglePayCallback){
-       /*CoroutineScope(Dispatchers.IO).launch {
+       CoroutineScope(Dispatchers.IO).launch {
            orkestapayAPI.getPaymentMethodInfo(PaymentMethodType.GOOGLE_PAY, object : PaymentMethodDataListener {
                override fun onSuccess(data: PaymentMethodData) {
                    googlePaymentMethodData = data
@@ -80,8 +80,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
                    callback.onError(error.toString())
                }
            })
-       }*/
-        googlePayClient.googlePaySetup(context, callback)
+       }
     }
 
     fun googlePayCheckout(googlePayData: GooglePayData){

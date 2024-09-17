@@ -161,8 +161,7 @@ fun Buttons() {
                         val googlePayData = GooglePayData("5", "MXN", "MX", true)
                         orkestapay.googlePayCheckout(googlePayData)
                     },
-                    //allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData.properties.gateway, orkestapay.googlePaymentMethodData.properties.merchantId).toString()
-                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods("orkestapay", "mch_e33f6f87ec5b47d1a41519f4ed3fcf53").toString()
+                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData.properties.gateway, orkestapay.googlePaymentMethodData.properties.merchantId).toString()
                 )
             }
 
