@@ -25,6 +25,7 @@ import com.orkestapay.orkestapay.core.networking.NetworkUtils
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.Serializable
+import java.net.URLEncoder
 
 
 class WebviewActivity : ComponentActivity() {
@@ -134,7 +135,7 @@ class WebviewActivity : ComponentActivity() {
 
         if(!value.isNullOrEmpty()) {
             newUrl += if (hasParam) "&" else "?"
-            newUrl +=  "${name}=${value}"
+            newUrl +=  "${name}=${URLEncoder.encode(value, "UTF-8")}"
             hasParam = true
         }
         return newUrl
