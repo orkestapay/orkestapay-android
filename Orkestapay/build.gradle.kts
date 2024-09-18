@@ -1,9 +1,8 @@
-import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 
 val groupId by extra { "com.orkestapay" }
 val artifactId by extra { "orkestapay" }
-val libraryVersion by extra { "0.0.12" }
+val libraryVersion by extra { "0.0.13" }
 
 plugins {
     alias(libs.plugins.androidLibrary)

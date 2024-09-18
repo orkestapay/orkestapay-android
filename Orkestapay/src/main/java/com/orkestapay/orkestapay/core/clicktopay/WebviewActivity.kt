@@ -103,6 +103,11 @@ class WebviewActivity : ComponentActivity() {
             setSupportMultipleWindows(true)
         }
 
+        webView.apply {
+            clearCache(true)
+            clearHistory()
+        }
+
         // Add JavascriptInterface
         callback?.let { webView.addJavascriptInterface(JsInterface(it, this), "androidListener") }
 
