@@ -8,6 +8,7 @@ import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayClient
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
@@ -54,7 +55,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         }
     }
 
-    fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, listener: ClickToPayListener){
-        clickToPayClient.openClickToPayCheckout(context, clickToPay, listener)
+    fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, clickToPayStyle: ClickToPayStyle?, listener: ClickToPayListener){
+        clickToPayClient.openClickToPayCheckout(context, clickToPay, clickToPayStyle, listener)
     }
 }

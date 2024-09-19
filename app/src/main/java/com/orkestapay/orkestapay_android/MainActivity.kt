@@ -1,5 +1,6 @@
 package com.orkestapay.orkestapay_android
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -33,6 +34,7 @@ import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.PromotionsResponse
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
 import com.orkestapay.orkestapay.core.networking.OrkestapayError
@@ -127,8 +129,9 @@ fun Buttons() {
             Spacer(Modifier.height(20.dp))
 
             Button(onClick = {
-                val clickToPay = ClickToPay("orkestapay.user6@yopmail.com", "John", "Doe", "52", "4411223344", true)
-                orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayListener{
+                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", true, true)
+                val style = ClickToPayStyle("Click to Pay", Color.parseColor("#e87600"))
+                orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayListener{
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {
                        Log.d("onSuccess", paymentMethod.toString())
                     }
