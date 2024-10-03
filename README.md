@@ -113,3 +113,71 @@ orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayListene
 
 })
 ```
+
+
+#### Google Pay
+
+Library contains a function to create payment method through Google Pay.
+
+##### Setup your integration
+To use Google Pay, first enable the Google Pay API by adding the following to the <application> tag of your AndroidManifest.xml:
+
+```groovy
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+Check that Google Pay is available:
+
+Implement GooglePayCallback and if the boolean isReady is true then the Google Pay button can be displayed
+
+```groovy
+orkestapay.googlePaySetup(ctx, object : GooglePayCallback{
+      override fun onReady(isReady: Boolean) {
+          Log.d("onReady", isReady.toString())
+      }
+
+      override fun onSuccess(paymentMethod: PaymentMethodResponse) {
+          Log.d("onSuccess", paymentMethod.toString())
+          googlePaymentMethod = paymentMethod.paymentMethodId
+      }
+
+      override fun onCancel() {
+          Log.d("onCancel", "onCancel")
+      }
+
+      override fun onError(error: String) {
+          Log.d("onError", error)
+      }
+
+  })
+```
+
+##### Add Google Pay Button
+Google Pay button dependency
+
+```groovy
+dependencies {
+  implementation("com.google.pay.button:compose-pay-button:PAY_BUTTON_VERSION")
+}
+```
+
+Configure the button
+
+```groovy
+@Composable
+fun GooglePayButton() {
+   PayButton(
+       onClick = {
+          //Launch Google Pay modal
+          val googlePayData = GooglePayData("1000", "MXN", "MX", true)
+          orkestapay.googlePayCheckout(googlePayData)
+       },
+       allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData!!.properties.gateway, orkestapay.googlePaymentMethodData!!.properties.merchantId).toString()
+   )
+}
+```
