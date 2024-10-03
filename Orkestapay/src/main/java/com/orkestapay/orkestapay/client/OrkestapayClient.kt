@@ -1,7 +1,6 @@
 package com.orkestapay.orkestapay.client
 
 import android.content.Context
-import android.util.Log
 import com.orkestapay.orkestapay.client.apirequest.OrkestapayAPI
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodDataListener
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
@@ -9,9 +8,9 @@ import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
 import com.orkestapay.orkestapay.client.enums.PaymentMethodType
 import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodData
-import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
 import com.orkestapay.orkestapay.client.model.googlepay.GooglePayData
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayClient
 import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
@@ -31,7 +30,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
     private var clickToPayClient: ClickToPayClient
     private var googlePayClient: GooglePayClient
     private var orkestapayAPI: OrkestapayAPI
-    lateinit var googlePaymentMethodData: PaymentMethodData
+    var googlePaymentMethodData: PaymentMethodData? = null
 
     init{
         var id = merchantId
@@ -64,8 +63,8 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         }
     }
 
-    fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, listener: ClickToPayListener){
-        clickToPayClient.openClickToPayCheckout(context, clickToPay, listener)
+    fun clickToPayCheckout(context: Context, clickToPay: ClickToPay, clickToPayStyle: ClickToPayStyle?, listener: ClickToPayListener){
+        clickToPayClient.openClickToPayCheckout(context, clickToPay, clickToPayStyle, listener)
     }
 
     fun googlePaySetup(context: Context, callback: GooglePayCallback){

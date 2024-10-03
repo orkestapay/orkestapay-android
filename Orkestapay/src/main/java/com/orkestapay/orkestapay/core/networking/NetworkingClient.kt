@@ -35,6 +35,7 @@ internal class NetworkingClient internal constructor(
         if (method == HttpMethod.POST) {
             headers["Content-Type"] = "application/json"
         }
+        Log.d("auth", headers.toString())
         return HttpRequest(url, method, body, headers)
     }
 }

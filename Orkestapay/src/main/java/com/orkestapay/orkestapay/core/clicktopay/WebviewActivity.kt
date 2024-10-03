@@ -2,9 +2,11 @@ package com.orkestapay.orkestapay.core.clicktopay
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceError
@@ -14,6 +16,9 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.orkestapay.R
@@ -21,19 +26,23 @@ import com.orkestapay.orkestapay.client.enums.ClickToPayError
 import com.orkestapay.orkestapay.client.enums.ClickToPayEvent
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
+import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
 import com.orkestapay.orkestapay.core.networking.NetworkUtils
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.Serializable
+import java.net.URLEncoder
 
 
-class WebviewActivity : ComponentActivity() {
+class WebviewActivity : AppCompatActivity() {
     lateinit var webView: WebView
     lateinit var loader: ProgressBar
+    lateinit var toolbar: Toolbar
     private lateinit var merchantId: String
     private lateinit var publicKey: String
     private lateinit var url: String
     private lateinit var clickToPay: ClickToPay
+    private var style: ClickToPayStyle? = null
     private var hasParam = false
 
     val callback: ClickToPayListener?
@@ -46,6 +55,7 @@ class WebviewActivity : ComponentActivity() {
         const val PUBLIC_KEY = "PUBLIC_KEY"
         const val URL = "URL"
         const val CLICK_TO_PAY = "CLICK_TO_PAY"
+        const val STYLE = "STYLE"
 
         private var listener: ClickToPayListener? = null
         fun setListener(callback: ClickToPayListener) {
@@ -55,6 +65,26 @@ class WebviewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        if(intent.hasExtra(STYLE))
+            style = getSerializable(this, STYLE, ClickToPayStyle::class.java)
+
+        try {
+            style?.let {
+                toolbar.setBackgroundColor(it.color)
+                supportActionBar?.title = it.title
+            }
+
+        } catch (e:Exception){
+            Log.d("ecxeption", e.toString())
+        }
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -92,6 +122,7 @@ class WebviewActivity : ComponentActivity() {
         urlCheckout = addQueryParam(urlCheckout, "phoneNumber", clickToPay.phoneNumber)
         urlCheckout = addQueryParam(urlCheckout, "firstName", clickToPay.firstName)
         urlCheckout = addQueryParam(urlCheckout, "lastName", clickToPay.lastName)
+        urlCheckout = addQueryParam(urlCheckout, "isCscRequired", clickToPay.isCscRequired.toString())
         urlCheckout = addQueryParam(urlCheckout, "isSandbox", clickToPay.isSandbox.toString())
 
         //Log.d("url checkout", urlCheckout)
@@ -100,6 +131,11 @@ class WebviewActivity : ComponentActivity() {
             domStorageEnabled = true
             javaScriptEnabled = true
             setSupportMultipleWindows(true)
+        }
+
+        webView.apply {
+            clearCache(true)
+            clearHistory()
         }
 
         // Add JavascriptInterface
@@ -134,7 +170,7 @@ class WebviewActivity : ComponentActivity() {
 
         if(!value.isNullOrEmpty()) {
             newUrl += if (hasParam) "&" else "?"
-            newUrl +=  "${name}=${value}"
+            newUrl +=  "${name}=${URLEncoder.encode(value, "UTF-8")}"
             hasParam = true
         }
         return newUrl
@@ -155,6 +191,17 @@ class WebviewActivity : ComponentActivity() {
             activity.intent.getSerializableExtra(name, clazz)!!
         else
             activity.intent.getSerializableExtra(name) as T
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                callback?.onClosed()
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 
@@ -178,9 +225,8 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
             when (event) {
                 ClickToPayEvent.COMPLETE -> {
                     data = jsonObject.getJSONObject("data")
-                    val paymentMethod = Json{
-                        ignoreUnknownKeys = true
-                    }.decodeFromString<PaymentMethodResponse>(data.toString())
+                    val json = Json{ ignoreUnknownKeys = true}
+                    val paymentMethod = json.decodeFromString<PaymentMethodResponse>(data.toString())
                     callback.onSuccess(paymentMethod)
                     activity.finish()
                 }
@@ -198,4 +244,5 @@ internal class JsInterface(private val callback: ClickToPayListener, val activit
             Log.d("WebViewBridge", "postMessage: $e")
         }
     }
+
 }
