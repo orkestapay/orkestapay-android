@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("plugin.serialization") version "1.9.23"
     id("com.vanniktech.maven.publish") version "0.28.0"
-
 }
 
 android {
@@ -94,6 +93,4 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.robolectric)
     testImplementation(libs.awaitility.kotlin)
-
-
 }

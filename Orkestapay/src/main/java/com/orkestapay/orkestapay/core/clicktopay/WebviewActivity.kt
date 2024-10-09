@@ -5,10 +5,13 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -85,6 +88,7 @@ class WebviewActivity : AppCompatActivity() {
             setDisplayShowHomeEnabled(true)
         }
 
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -137,6 +141,10 @@ class WebviewActivity : AppCompatActivity() {
             clearCache(true)
             clearHistory()
         }
+        val cookieManager: CookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)
+        cookieManager.setAcceptThirdPartyCookies(webView, true)
+
 
         // Add JavascriptInterface
         callback?.let { webView.addJavascriptInterface(JsInterface(it, this), "androidListener") }
@@ -145,7 +153,6 @@ class WebviewActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-
                 loader.visibility = View.GONE
                 view?.visibility = View.VISIBLE
             }
@@ -162,6 +169,8 @@ class WebviewActivity : AppCompatActivity() {
                 }
             }
         }
+
+
         webView.loadUrl(urlCheckout)
     }
 
@@ -202,6 +211,11 @@ class WebviewActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStop() {
+        CookieManager.getInstance().flush()
+        super.onStop()
     }
 }
 
