@@ -6,6 +6,10 @@
 
     <application>
         <activity
+            android:name=".orkestapay.core.googlepay.GooglePayActivity"
+            android:theme="@style/TransparentTheme"
+            android:exported="false" />
+        <activity
             android:name=".orkestapay.core.clicktopay.WebviewActivity"
             android:exported="false" android:theme="@style/AppTheme.NoActionBar"/>
     </application>

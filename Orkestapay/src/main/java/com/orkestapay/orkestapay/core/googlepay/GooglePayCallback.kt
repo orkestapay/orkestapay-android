@@ -1,8 +1,10 @@
-package com.orkestapay.orkestapay.core.clicktopay
+package com.orkestapay.orkestapay.core.googlepay
 
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
-interface ClickToPayListener {
+
+interface GooglePayCallback {
+    fun onReady(isReady: Boolean)
     fun onSuccess(paymentMethod: PaymentMethodResponse)
-    fun onClosed()
+    fun onCancel()
     fun onError(error: String)
 }

@@ -1,9 +1,12 @@
 package com.orkestapay.orkestapay.client.apirequest
 
 import android.util.Log
+import com.orkestapay.orkestapay.client.enums.PaymentMethodType
 import com.orkestapay.orkestapay.client.model.PaymentMethod
+import com.orkestapay.orkestapay.client.model.PaymentMethodData
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.PromotionsResponse
+import com.orkestapay.orkestapay.client.model.googlepay.PaymentMethodGooglePay
 import com.orkestapay.orkestapay.core.networking.RestRequest
 import com.orkestapay.orkestapay.core.networking.CoreConfig
 import com.orkestapay.orkestapay.core.networking.model.ErrorResponse
@@ -16,11 +19,23 @@ import kotlinx.serialization.json.Json
 internal class OrkestapayAPI(private val coreConfig: CoreConfig) {
     private var networkingClient: NetworkingClient = NetworkingClient(coreConfig)
 
-    suspend fun createPaymentMethod(paymentMethod: PaymentMethod, listener: PaymentMethodListener){
+    suspend fun createPaymentMethodGooglePay(paymentMethodGooglePay: PaymentMethodGooglePay, listener: PaymentMethodListener) {
+        val body = Json.encodeToString(paymentMethodGooglePay)
+        createPaymentMethod(body, listener)
+    }
+
+    suspend fun createPaymentMethodCard(paymentMethod: PaymentMethod, listener: PaymentMethodListener) {
         if(paymentMethod.customerId.isNullOrEmpty() && paymentMethod.deviceSessionId.isNullOrEmpty()) {
             listener.onError(OrkestapayError(-1, "It is necessary to send customerId or deviceSessionId"))
         }
         val body = Json.encodeToString(paymentMethod)
+        createPaymentMethod(body, listener)
+    }
+    suspend fun createPaymentMethod(body: String, listener: PaymentMethodListener){
+        /*if(paymentMethod.customerId.isNullOrEmpty() && paymentMethod.deviceSessionId.isNullOrEmpty()) {
+            listener.onError(OrkestapayError(-1, "It is necessary to send customerId or deviceSessionId"))
+        }
+        val body = Json.encodeToString(paymentMethod)*/
         val restRequest = RestRequest("/v1/payment-methods", HttpMethod.POST, body)
         val httpResponse = networkingClient.send(restRequest)
         try {
@@ -60,6 +75,25 @@ internal class OrkestapayAPI(private val coreConfig: CoreConfig) {
             }
 
         } catch (e: Exception){
+            listener.onError(OrkestapayError(httpResponse.status, e.message.toString()))
+        }
+    }
+
+    suspend fun getPaymentMethodInfo(type: PaymentMethodType, listener: PaymentMethodDataListener){
+        val restRequest = RestRequest("/v1/merchants/payment-methods/$type", HttpMethod.GET)
+        val httpResponse = networkingClient.send(restRequest)
+        try {
+            val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+            if(httpResponse.isSuccessful) {
+                val response = json.decodeFromString<PaymentMethodData>(httpResponse.body.toString())
+                listener.onSuccess(response)
+            } else {
+                val error = json.decodeFromString<ErrorResponse>(httpResponse.body.toString())
+                listener.onError(OrkestapayError(httpResponse.status, error.message ?: error.error ?: ""))
+            }
+
+        } catch (e: Exception){
+            Log.d("error", e.toString())
             listener.onError(OrkestapayError(httpResponse.status, e.message.toString()))
         }
     }
