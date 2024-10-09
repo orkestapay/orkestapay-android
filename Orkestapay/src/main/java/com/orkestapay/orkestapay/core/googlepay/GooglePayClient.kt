@@ -57,7 +57,6 @@ internal class GooglePayClient(private val coreConfig: CoreConfig) {
             }
 
         })
-        Log.d("googlePayData",googlePayData.toString())
         val intent = Intent(context, GooglePayActivity::class.java).apply {
             putExtra(GooglePayActivity.GOOGLE_PAY_DATA, googlePayData)
             putExtra(GooglePayActivity.IS_SANDBOX, isSandbox())
