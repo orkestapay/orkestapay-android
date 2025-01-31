@@ -121,6 +121,8 @@ class WebviewActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     fun loadCheckout() {
         var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}"
+        if(!clickToPay.currency.isNullOrEmpty()) urlCheckout += "/${clickToPay.currency}"
+        if(!clickToPay.totalAmount.isNullOrEmpty()) urlCheckout += "/${clickToPay.totalAmount}"
         urlCheckout = addQueryParam(urlCheckout, "email", clickToPay.email)
         urlCheckout = addQueryParam(urlCheckout, "phoneCountryCode", clickToPay.phoneCountryCode)
         urlCheckout = addQueryParam(urlCheckout, "phoneNumber", clickToPay.phoneNumber)

@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
 fun Buttons() {
     //uat click to pay
 
-    val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
+    val orkestapay = OrkestapayClient("mch_d58cbba060ac411289c160f336c8c41b", "pk_test_h2gn9ksk8q7mfhovweviyjp93b7zcgus", false)
     //var orkestapay = OrkestapayClient("mch_e33f6f87ec5b47d1a41519f4ed3fcf53", "pk_test_vywzkgf0im78h6fpdr22nx322x98ae2z", false)
     val ctx = LocalContext.current
     var deviceSessionId by remember { mutableStateOf("") }
@@ -180,7 +180,7 @@ fun Buttons() {
             Spacer(Modifier.height(20.dp))
 
             Button(onClick = {
-                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", true, true)
+                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", "100", "MXN", true, true)
                 val style = ClickToPayStyle("Click to Pay", android.graphics.Color.parseColor("#e87600"))
                 orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayListener{
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {

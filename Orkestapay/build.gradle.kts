@@ -2,7 +2,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 
 val groupId by extra { "com.orkestapay" }
 val artifactId by extra { "orkestapay" }
-val libraryVersion by extra { "0.1.1" }
+val libraryVersion by extra { "0.1.2" }
 
 plugins {
     alias(libs.plugins.androidLibrary)

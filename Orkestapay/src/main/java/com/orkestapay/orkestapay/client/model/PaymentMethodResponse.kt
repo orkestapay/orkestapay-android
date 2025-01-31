@@ -8,4 +8,5 @@ import kotlinx.serialization.Serializable
 data class PaymentMethodResponse(@SerialName("payment_method_id") val paymentMethodId: String,
                                  val alias: String? = null,
                                  val type: PaymentMethodType,
-                                 val card: CardResponse)
+                                 val card: CardResponse,
+                                 @SerialName("payment_option") val paymentOption: PaymentOption? = null)
