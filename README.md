@@ -95,7 +95,7 @@ orkestapay.getPromotions("123456", "MXN", "1000", object : PromotionsListener{
 Library contains a function to open checkout to Click to Pay.
 
 ```groovy
-val clickToPay = ClickToPay("customer@mail.com", "John", "Doe", "52", "4411223344", true, true)
+val clickToPay = ClickToPay("customer@mail.com", "John", "Doe", "52", "4411223344", "100", "MXN", true, true)
 val style = ClickToPayStyle("Click to Pay", Color.parseColor("#e87600"))
 
 orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayListener{
