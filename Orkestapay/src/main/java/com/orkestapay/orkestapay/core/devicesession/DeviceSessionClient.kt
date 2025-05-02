@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.orkestapay.orkestapay.core.networking.CoreConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,7 @@ internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
             addJavascriptInterface(JsInterface(callback), "androidListener")
             clearCache(true)
             clearHistory()
+            webViewClient = WebViewClient()
             loadUrl("$urlString/script/device-session?merchant_id=${coreConfig.merchantId}&public_key=${coreConfig.publicKey}")
         }
         Timer().schedule(timerTask {
