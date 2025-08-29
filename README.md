@@ -45,7 +45,7 @@ If you want to switch to production mode, you must send isProductionMode as true
 Library contains a function to generate device session id
 
 ```groovy
-orkestapay.creteDeviceSession(context, object : DeviceSessionListener{
+orkestapay.creteDeviceSession(context, layout, object : DeviceSessionListener{
     override fun onSuccess(deviceSession: String) {
         Log.d("dev session id", deviceSession)
     }
