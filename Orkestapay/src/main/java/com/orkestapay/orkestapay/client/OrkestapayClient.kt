@@ -1,6 +1,7 @@
 package com.orkestapay.orkestapay.client
 
 import android.content.Context
+import android.view.ViewGroup
 import com.orkestapay.orkestapay.client.apirequest.OrkestapayAPI
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodDataListener
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
@@ -47,8 +48,8 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
         googlePayClient = GooglePayClient(coreConfig)
     }
 
-    fun creteDeviceSession(context: Context, callback: DeviceSessionListener){
-        deviceSessionClient.getDeviceSessionId(context, callback)
+    fun creteDeviceSession(context: Context, parent: ViewGroup, callback: DeviceSessionListener){
+        deviceSessionClient.getDeviceSessionId(context, parent, callback)
     }
 
     fun createPaymentMethod(paymentMethod: PaymentMethod, listener: PaymentMethodListener){

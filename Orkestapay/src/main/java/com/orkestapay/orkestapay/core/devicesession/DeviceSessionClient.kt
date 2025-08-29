@@ -2,56 +2,62 @@ package com.orkestapay.orkestapay.core.devicesession
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
+import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.orkestapay.orkestapay.core.networking.CoreConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.Timer
-import kotlin.concurrent.timerTask
+
 
 private var hasSession = false
 internal class DeviceSessionClient(private val coreConfig: CoreConfig) {
 
     @SuppressLint("SetJavaScriptEnabled")
-    fun getDeviceSessionId(context: Context, callback: DeviceSessionListener){
+    fun getDeviceSessionId(context: Context, parent: ViewGroup, callback: DeviceSessionListener){
         val urlString = coreConfig.environment.checkoutUrl
+
         val webView = WebView(context).apply {
             settings.javaScriptEnabled = true
-            addJavascriptInterface(JsInterface(callback), "androidListener")
+            addJavascriptInterface(JsInterface(callback, this), "androidListener")
             clearCache(true)
-            clearHistory()
+            // clearHistory()
             webViewClient = WebViewClient()
-            loadUrl("$urlString/script/device-session?merchant_id=${coreConfig.merchantId}&public_key=${coreConfig.publicKey}")
-        }
-        Timer().schedule(timerTask {
-            if(!hasSession){
-                CoroutineScope(Dispatchers.Main).launch {
-                    webView.reload()
+
+            /*webViewClient = object : WebViewClient() {
+                override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                    Log.e("WebView", "Render process crashed: ${detail}")
+                    return true
                 }
-            } else {
-                cancel()
             }
 
-        },15000, 15000)
+            webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                    Log.d("WebView", "JS Log: ${consoleMessage?.message()}")
+                    return super.onConsoleMessage(consoleMessage)
+                }
+            }*/
+
+            loadUrl("$urlString/script/device-session?merchant_id=${coreConfig.merchantId}&public_key=${coreConfig.publicKey}")
+        }
+
+        parent.addView(webView)
     }
 }
 
-internal class JsInterface(private val callback: DeviceSessionListener) {
+internal class JsInterface(private val callback: DeviceSessionListener, private val webView: WebView) {
     @JavascriptInterface
     fun receiveMessage(value: String) {
         val jsonObject = JSONObject(value)
         if(jsonObject.has("device_session_id")) {
             hasSession = true
             callback.onSuccess(jsonObject.get("device_session_id").toString())
+            webView.destroy()
         }
         if(jsonObject.has("error")) {
             hasSession = true
             callback.onError(jsonObject.getJSONObject("error").get("message").toString())
+            webView.destroy()
         }
     }
 }

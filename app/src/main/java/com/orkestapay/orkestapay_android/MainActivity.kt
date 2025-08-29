@@ -2,6 +2,9 @@ package com.orkestapay.orkestapay_android
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -105,9 +108,13 @@ fun Buttons() {
             .fillMaxHeight(),
             verticalArrangement =  Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
+            val frameLayout = FrameLayout(ctx).apply {
+                layoutParams = ViewGroup.LayoutParams(1, 1)
+                visibility = View.INVISIBLE
+            }
 
             Button(onClick = {
-                orkestapay.creteDeviceSession(ctx, object : DeviceSessionListener{
+                orkestapay.creteDeviceSession(ctx, frameLayout, object : DeviceSessionListener{
                     override fun onSuccess(deviceSession: String) {
                         Log.d("dev session id", deviceSession)
                         deviceSessionId = deviceSession
@@ -117,7 +124,6 @@ fun Buttons() {
                         Log.d("error", error)
                     }
                 })
-
             }) {
                 Text(text = "Get Session Id")
             }
