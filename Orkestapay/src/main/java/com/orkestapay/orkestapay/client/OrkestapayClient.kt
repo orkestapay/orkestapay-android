@@ -85,7 +85,7 @@ class OrkestapayClient(merchantId: String, publicKey: String, isProductionMode: 
 
     fun googlePayCheckout(googlePayData: GooglePayData){
         CoroutineScope(Dispatchers.IO).launch {
-            googlePayClient.googlePayCheckout(googlePayData, orkestapayAPI)
+            googlePayClient.googlePayCheckout(googlePayData, orkestapayAPI, googlePaymentMethodData)
         }
     }
 

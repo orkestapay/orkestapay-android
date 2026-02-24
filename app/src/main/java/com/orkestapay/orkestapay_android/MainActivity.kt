@@ -71,7 +71,7 @@ fun Buttons() {
     //uat click to pay
     //val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
     //sand click to pay
-    val orkestapay = OrkestapayClient("mch_bd0f209276824f3884d9fcbcc13326b4", "pk_test_cckru4tf9tj4wbosuu0lxmlcu1jo1ps4", false)
+    val orkestapay = OrkestapayClient("mch_89d235df1c944396808a73564883cde7", "pk_test_s2jtj1klwwmijfj1vyuvsult466hj5n5", false)
 
     //val orkestapay = OrkestapayClient("mch_d58cbba060ac411289c160f336c8c41b", "pk_test_h2gn9ksk8q7mfhovweviyjp93b7zcgus", false)
     //var orkestapay = OrkestapayClient("mch_e33f6f87ec5b47d1a41519f4ed3fcf53", "pk_test_vywzkgf0im78h6fpdr22nx322x98ae2z", false)
@@ -80,6 +80,10 @@ fun Buttons() {
     var googlePaymentMethod by remember { mutableStateOf("") }
     var click2PayPaymentMethod by remember { mutableStateOf("") }
     var btnGoogleIsVisible by remember { mutableStateOf(false) }
+    val frameLayout = FrameLayout(ctx).apply {
+        layoutParams = ViewGroup.LayoutParams(1, 1)
+        visibility = View.INVISIBLE
+    }
 
     orkestapay.googlePaySetup(ctx, object : GooglePayCallback{
         override fun onReady(isReady: Boolean) {
@@ -102,21 +106,28 @@ fun Buttons() {
 
     })
 
+    orkestapay.creteDeviceSession(ctx, frameLayout, object : DeviceSessionListener{
+        override fun onSuccess(deviceSession: String) {
+            Log.d("device_session_id", deviceSession)
+            deviceSessionId = deviceSession
+        }
+
+        override fun onError(error: String) {
+            Log.d("error", error)
+        }
+    })
+
     OrkestapayandroidTheme {
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
             verticalArrangement =  Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            val frameLayout = FrameLayout(ctx).apply {
-                layoutParams = ViewGroup.LayoutParams(1, 1)
-                visibility = View.INVISIBLE
-            }
 
             Button(onClick = {
                 orkestapay.creteDeviceSession(ctx, frameLayout, object : DeviceSessionListener{
                     override fun onSuccess(deviceSession: String) {
-                        Log.d("dev session id", deviceSession)
+                        Log.d("device_session_id", deviceSession)
                         deviceSessionId = deviceSession
                     }
 

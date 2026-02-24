@@ -9,6 +9,7 @@ import com.google.android.gms.wallet.Wallet
 import com.google.android.gms.wallet.WalletConstants
 import com.orkestapay.orkestapay.client.apirequest.OrkestapayAPI
 import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
+import com.orkestapay.orkestapay.client.model.PaymentMethodData
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.googlepay.GooglePayData
 import com.orkestapay.orkestapay.client.model.googlepay.PaymentMethodGooglePay
@@ -36,7 +37,7 @@ internal class GooglePayClient(private val coreConfig: CoreConfig) {
         }
     }
 
-    suspend fun googlePayCheckout(googlePayData: GooglePayData, orkestapayAPI: OrkestapayAPI) {
+    suspend fun googlePayCheckout(googlePayData: GooglePayData, orkestapayAPI: OrkestapayAPI, googlePaymentMethodData: PaymentMethodData?) {
         if (!this::callback.isInitialized) return
         GooglePayActivity.setListeners(callback, object: GooglePayAuthCallback {
             override fun onSuccess(paymentMethod: PaymentMethodGooglePay, activity: GooglePayActivity) {
@@ -61,8 +62,8 @@ internal class GooglePayClient(private val coreConfig: CoreConfig) {
             putExtra(GooglePayActivity.GOOGLE_PAY_DATA, googlePayData)
             putExtra(GooglePayActivity.IS_SANDBOX, isSandbox())
             putExtra(GooglePayActivity.MERCHANT_ID, coreConfig.merchantId)
-            putExtra(GooglePayActivity.MERCHANT_NAME, "Merchant Test")
-            putExtra(GooglePayActivity.GATEWAY, "orkestapay")
+            putExtra(GooglePayActivity.MERCHANT_NAME, googlePaymentMethodData?.properties?.merchantName)
+            putExtra(GooglePayActivity.GATEWAY, googlePaymentMethodData?.properties?.gateway)
         }
 
         context.startActivity(intent)

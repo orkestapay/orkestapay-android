@@ -2,6 +2,8 @@ package com.orkestapay.orkestapay.core.devicesession
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -52,12 +54,16 @@ internal class JsInterface(private val callback: DeviceSessionListener, private 
         if(jsonObject.has("device_session_id")) {
             hasSession = true
             callback.onSuccess(jsonObject.get("device_session_id").toString())
-            webView.destroy()
+            Handler(Looper.getMainLooper()).post {
+                webView.destroy()
+            }
         }
         if(jsonObject.has("error")) {
             hasSession = true
             callback.onError(jsonObject.getJSONObject("error").get("message").toString())
-            webView.destroy()
+            Handler(Looper.getMainLooper()).post {
+                webView.destroy()
+            }
         }
     }
 }
