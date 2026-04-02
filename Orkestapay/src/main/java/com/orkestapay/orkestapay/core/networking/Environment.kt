@@ -7,6 +7,6 @@ enum class Environment(internal val url: String, internal val checkoutUrl: Strin
     ),
     SANDBOX(
         "https://api.sand.orkestapay.com",
-        "https://checkout.sand.orkestapay.com"
+        "https://checkout.sbox.orkestapay.com"
     ),
 }

@@ -14,6 +14,7 @@ internal class NetworkingClient internal constructor(
 
     suspend fun send(apiRequest: RestRequest): HttpResponse {
         val httpRequest = createHttpRequestFromAPIRequest(apiRequest, config)
+        println(httpRequest)
         return http.send(httpRequest)
     }
 

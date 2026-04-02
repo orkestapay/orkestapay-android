@@ -12,6 +12,23 @@
         <activity
             android:name=".orkestapay.core.clicktopay.WebviewActivity"
             android:exported="false" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".orkestapay.core.clicktopay.ClickToPayControlActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="false" />
+        <activity
+            android:name=".orkestapay.core.clicktopay.ClickToPayCallbackActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="orkestapay" android:host="callback" />
+            </intent-filter>
+        </activity>
     </application>
+
 
 </manifest>

@@ -3,25 +3,21 @@ package com.orkestapay.orkestapay.core.clicktopay
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.orkestapay.R
@@ -35,10 +31,11 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.Serializable
 import java.net.URLEncoder
+import androidx.core.net.toUri
 
 
 class WebviewActivity : AppCompatActivity() {
-    lateinit var webView: WebView
+    //lateinit var webView: WebView
     lateinit var loader: ProgressBar
     lateinit var toolbar: Toolbar
     private lateinit var merchantId: String
@@ -48,7 +45,15 @@ class WebviewActivity : AppCompatActivity() {
     private var style: ClickToPayStyle? = null
     private var hasParam = false
 
-    val callback: ClickToPayListener?
+    private val customTabsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        this.finish()
+        // Aquí manejas cuando el usuario cierra el Custom Tab
+        // Por ejemplo: if (result.resultCode == Activity.RESULT_OK) { ... }
+    }
+
+    val callback: ClickToPayCallback?
         get() {
             return listener
         }
@@ -60,8 +65,8 @@ class WebviewActivity : AppCompatActivity() {
         const val CLICK_TO_PAY = "CLICK_TO_PAY"
         const val STYLE = "STYLE"
 
-        private var listener: ClickToPayListener? = null
-        fun setListener(callback: ClickToPayListener) {
+        private var listener: ClickToPayCallback? = null
+        fun setListener(callback: ClickToPayCallback) {
             listener = callback
         }
     }
@@ -80,7 +85,7 @@ class WebviewActivity : AppCompatActivity() {
             }
 
         } catch (e:Exception){
-            Log.d("ecxeption", e.toString())
+            Log.d("exception", e.toString())
         }
 
         supportActionBar?.apply {
@@ -112,7 +117,7 @@ class WebviewActivity : AppCompatActivity() {
 
         })
 
-        webView = findViewById(R.id.click_to_pay_web_view)
+        /*webView = findViewById(R.id.click_to_pay_web_view)*/
         loader = findViewById(R.id.loader)
         loadCheckout()
 
@@ -120,20 +125,30 @@ class WebviewActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadCheckout() {
-        var urlCheckout = "${url}/integrations/click2pay/#/checkout/${merchantId}/${publicKey}"
-        if(!clickToPay.currency.isNullOrEmpty()) urlCheckout += "/${clickToPay.currency}"
-        if(!clickToPay.totalAmount.isNullOrEmpty()) urlCheckout += "/${clickToPay.totalAmount}"
+        var urlCheckout = "${url}/integrations/click-to-pay"
+        urlCheckout = addQueryParam(urlCheckout, "merchantId", merchantId)
+        urlCheckout = addQueryParam(urlCheckout, "publicKey", publicKey)
+        urlCheckout = addQueryParam(urlCheckout, "currency", clickToPay.currency)
+        urlCheckout = addQueryParam(urlCheckout, "totalAmount", clickToPay.totalAmount)
         urlCheckout = addQueryParam(urlCheckout, "email", clickToPay.email)
         urlCheckout = addQueryParam(urlCheckout, "phoneCountryCode", clickToPay.phoneCountryCode)
         urlCheckout = addQueryParam(urlCheckout, "phoneNumber", clickToPay.phoneNumber)
         urlCheckout = addQueryParam(urlCheckout, "firstName", clickToPay.firstName)
         urlCheckout = addQueryParam(urlCheckout, "lastName", clickToPay.lastName)
-        urlCheckout = addQueryParam(urlCheckout, "isCscRequired", clickToPay.isCscRequired.toString())
-        urlCheckout = addQueryParam(urlCheckout, "isSandbox", clickToPay.isSandbox.toString())
+        //urlCheckout = addQueryParam(urlCheckout, "isCscRequired", clickToPay.isCscRequired.toString())
+        //urlCheckout = addQueryParam(urlCheckout, "isSandbox", clickToPay.isSandbox.toString())
+
+        val qualifiedUrl = urlCheckout.toUri()
+
+        customTabsLauncher.launch(
+            // Invoke the custom tabs intent to open Chrome custom tabs.
+            getCustomTabsIntent(
+                uri = qualifiedUrl
+            ).intent)
 
         //Log.d("url checkout", urlCheckout)
 
-        webView.settings.apply {
+        /*webView.settings.apply {
             domStorageEnabled = true
             javaScriptEnabled = true
             setSupportMultipleWindows(true)
@@ -173,7 +188,26 @@ class WebviewActivity : AppCompatActivity() {
         }
 
 
-        webView.loadUrl(urlCheckout)
+        webView.loadUrl(urlCheckout)*/
+    }
+
+    fun getCustomTabsIntent(uri: Uri): CustomTabsIntent {
+
+        //Provide customization if required by the application.
+        val tabColor = CustomTabColorSchemeParams.Builder()
+        tabColor.setNavigationBarColor(Color.BLUE)
+
+        val intentCustomTabs = CustomTabsIntent.Builder()
+            .setDefaultColorSchemeParams(tabColor.build())
+            .setDownloadButtonEnabled(false)
+            .setBookmarksButtonEnabled(false)
+            .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
+            .setInstantAppsEnabled(false)
+            .setBackgroundInteractionEnabled(false)
+            .build()
+        intentCustomTabs.intent.setData(uri)
+
+        return intentCustomTabs
     }
 
     private fun addQueryParam(url: String, name: String, value: String?): String {
@@ -221,7 +255,7 @@ class WebviewActivity : AppCompatActivity() {
     }
 }
 
-internal class JsInterface(private val callback: ClickToPayListener, val activity: ComponentActivity) {
+internal class JsInterface(private val callback: ClickToPayCallback, val activity: ComponentActivity) {
     @JavascriptInterface
     fun receiveMessage(value: String) {
         try {

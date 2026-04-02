@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +39,7 @@ import com.orkestapay.orkestapay.client.model.PaymentMethod
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
 import com.orkestapay.orkestapay.client.model.PromotionsResponse
 import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
-import com.orkestapay.orkestapay.core.clicktopay.ClickToPayListener
+import com.orkestapay.orkestapay.core.clicktopay.ClickToPayCallback
 import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
 import com.orkestapay.orkestapay.core.googlepay.GooglePayUtil
 import com.orkestapay.orkestapay.core.networking.OrkestapayError
@@ -65,17 +65,20 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Buttons() {
+fun Buttons(
+) {
+    val ctx = LocalContext.current
+    val activity = ctx as ComponentActivity
     //uat click to pay
     //val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
     //sand click to pay
-    val orkestapay = OrkestapayClient("mch_89d235df1c944396808a73564883cde7", "pk_test_s2jtj1klwwmijfj1vyuvsult466hj5n5", false)
+    //val orkestapay = OrkestapayClient("mch_89d235df1c944396808a73564883cde7", "pk_test_s2jtj1klwwmijfj1vyuvsult466hj5n5", false)
+
 
     //val orkestapay = OrkestapayClient("mch_d58cbba060ac411289c160f336c8c41b", "pk_test_h2gn9ksk8q7mfhovweviyjp93b7zcgus", false)
     //var orkestapay = OrkestapayClient("mch_e33f6f87ec5b47d1a41519f4ed3fcf53", "pk_test_vywzkgf0im78h6fpdr22nx322x98ae2z", false)
-    val ctx = LocalContext.current
+    val orkestapay = OrkestapayClient("mch_591bbfb20c324605877afc9b01d715c3", "pk_test_c50ogjsxw0uhir2wc9kx0uxily0kzwj2",  false)
     var deviceSessionId by remember { mutableStateOf("") }
     var googlePaymentMethod by remember { mutableStateOf("") }
     var click2PayPaymentMethod by remember { mutableStateOf("") }
@@ -84,6 +87,7 @@ fun Buttons() {
         layoutParams = ViewGroup.LayoutParams(1, 1)
         visibility = View.INVISIBLE
     }
+
 
     orkestapay.googlePaySetup(ctx, object : GooglePayCallback{
         override fun onReady(isReady: Boolean) {
@@ -101,7 +105,7 @@ fun Buttons() {
         }
 
         override fun onError(error: String) {
-            Log.d("onError", error)
+            Log.d("onError google pay", error)
         }
 
     })
@@ -186,7 +190,7 @@ fun Buttons() {
                         .fillMaxWidth().padding(16.dp, 10.dp),
 
                     onClick = {
-                        val googlePayData = GooglePayData("5", "MXN", "MX", true)
+                        val googlePayData = GooglePayData("2836.02", "MXN", "MX", true)
                         orkestapay.googlePayCheckout(googlePayData)
                     },
                     allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData!!.properties.gateway, orkestapay.googlePaymentMethodData!!.properties.merchantId).toString()
@@ -200,9 +204,9 @@ fun Buttons() {
             Spacer(Modifier.height(20.dp))
 
             Button(onClick = {
-                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", "100", "MXN", true, true)
+                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", "100", "MXN")
                 val style = ClickToPayStyle("Click to Pay", android.graphics.Color.parseColor("#e87600"))
-                orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayListener{
+                orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayCallback{
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {
                        Log.d("onSuccess", paymentMethod.toString())
                         click2PayPaymentMethod = paymentMethod.paymentMethodId
@@ -215,7 +219,6 @@ fun Buttons() {
                     override fun onError(error: String) {
                         Log.d("onError", error)
                     }
-
                 })
             }) {
                 Text(text = "Click To Pay")

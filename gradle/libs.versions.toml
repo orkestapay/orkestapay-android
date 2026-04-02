@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.1"
 awaitilityKotlin = "4.2.1"
+browser = "1.8.0"
 composePayButton = "1.0.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
@@ -23,6 +24,7 @@ activity = "1.9.1"
 constraintlayout = "2.1.4"
 
 [libraries]
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitilityKotlin" }
 compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
