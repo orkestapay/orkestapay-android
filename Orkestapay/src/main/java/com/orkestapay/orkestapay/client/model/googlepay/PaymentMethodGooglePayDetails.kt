@@ -1,9 +1,10 @@
 package com.orkestapay.orkestapay.client.model.googlepay
 
 import com.orkestapay.orkestapay.client.enums.PaymentMethodType
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class PaymentMethodGooglePayDetails(val type: PaymentMethodType? = null,
                                          @SerialName("wallet_type") val walletType: PaymentMethodType? = null,

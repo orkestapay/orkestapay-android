@@ -19,18 +19,6 @@ import java.net.URLEncoder
 internal class ClickToPayClient(private val coreConfig: CoreConfig) {
 
     fun openClickToPayCheckout(context: Context,clickToPay: ClickToPay/*, style: ClickToPayStyle?*/, callback: ClickToPayCallback) {
-        /* WebviewActivity.setListener(callback)
-        val intent = Intent(context, WebviewActivity::class.java).apply {
-            putExtra(WebviewActivity.CLICK_TO_PAY, clickToPay)
-            putExtra(WebviewActivity.MERCHANT_ID, coreConfig.merchantId)
-            putExtra(WebviewActivity.PUBLIC_KEY, coreConfig.publicKey)
-            putExtra(WebviewActivity.URL, coreConfig.environment.checkoutUrl)
-        }
-        if (style != null) {
-            intent.putExtra(WebviewActivity.STYLE, style)
-        }
-        context.startActivity(intent) */
-
         ClickToPayInternal.currentCallback = callback
 
         var urlCheckout = "${coreConfig.environment.checkoutUrl}/integrations/click-to-pay"

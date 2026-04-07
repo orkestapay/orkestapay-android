@@ -15,6 +15,7 @@
         <activity
             android:name=".orkestapay.core.clicktopay.ClickToPayControlActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleTask"
             android:exported="false" />
         <activity
             android:name=".orkestapay.core.clicktopay.ClickToPayCallbackActivity"
@@ -25,7 +26,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="orkestapay" android:host="callback" />
+                <data android:scheme="orkestapay-c2p" android:host="callback" />
             </intent-filter>
         </activity>
     </application>

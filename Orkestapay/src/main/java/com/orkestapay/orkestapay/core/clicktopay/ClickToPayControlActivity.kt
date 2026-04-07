@@ -45,7 +45,7 @@ class ClickToPayControlActivity: ComponentActivity() {
             .setInstantAppsEnabled(false)
             .setBackgroundInteractionEnabled(false)
             .build()
-        intentCustomTabs.intent.setData(uri)
+        intentCustomTabs.intent.data = uri
 
         return intentCustomTabs
     }

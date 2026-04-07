@@ -10,6 +10,4 @@ data class ClickToPay(
     val phoneNumber: String? = null,
     val totalAmount: String,
     val currency: String,
-                      //val isCscRequired: Boolean? = true,
-                      //val isSandbox: Boolean? = null
     ): Serializable

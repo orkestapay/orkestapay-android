@@ -1,9 +1,10 @@
 package com.orkestapay.orkestapay.client.model.googlepay
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
-
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class PaymentMethodDataGooglePay(val description: String,
                                       val type: String,

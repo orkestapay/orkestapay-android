@@ -205,8 +205,7 @@ fun Buttons(
 
             Button(onClick = {
                 val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", "100", "MXN")
-                val style = ClickToPayStyle("Click to Pay", android.graphics.Color.parseColor("#e87600"))
-                orkestapay.clickToPayCheckout(ctx, clickToPay, style, object : ClickToPayCallback{
+                orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayCallback{
                     override fun onSuccess(paymentMethod: PaymentMethodResponse) {
                        Log.d("onSuccess", paymentMethod.toString())
                         click2PayPaymentMethod = paymentMethod.paymentMethodId

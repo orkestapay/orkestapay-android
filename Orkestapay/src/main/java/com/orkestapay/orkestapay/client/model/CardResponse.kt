@@ -1,9 +1,10 @@
 package com.orkestapay.orkestapay.client.model
 
 import com.orkestapay.orkestapay.client.enums.CardType
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class CardResponse(val bin: String,
                         @SerialName("last_four") val lastFour: String,
