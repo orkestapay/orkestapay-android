@@ -1,52 +1,14 @@
 package com.orkestapay.orkestapay_android
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.orkestapay.orkestapay.client.OrkestapayClient
-import com.orkestapay.orkestapay.client.apirequest.PaymentMethodListener
-import com.orkestapay.orkestapay.client.apirequest.PromotionsListener
-import com.orkestapay.orkestapay.client.enums.PaymentMethodType
-import com.orkestapay.orkestapay.client.model.Card
-import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPay
-import com.orkestapay.orkestapay.client.model.PaymentMethod
-import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
-import com.orkestapay.orkestapay.client.model.PromotionsResponse
-import com.orkestapay.orkestapay.client.model.clicktopay.ClickToPayStyle
-import com.orkestapay.orkestapay.core.clicktopay.ClickToPayCallback
-import com.orkestapay.orkestapay.core.devicesession.DeviceSessionListener
-import com.orkestapay.orkestapay.core.googlepay.GooglePayUtil
-import com.orkestapay.orkestapay.core.networking.OrkestapayError
+import com.orkestapay.orkestapay_android.navigation.MyAppNavigation
 import com.orkestapay.orkestapay_android.ui.theme.OrkestapayandroidTheme
-import com.google.pay.button.PayButton
-import com.orkestapay.orkestapay.client.model.googlepay.GooglePayData
-import com.orkestapay.orkestapay.core.googlepay.GooglePayCallback
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,176 +20,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFFFFFFFF)
                 ) {
-                    Buttons()
+                    MyAppNavigation()
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun Buttons(
-) {
-    val ctx = LocalContext.current
-    val activity = ctx as ComponentActivity
-    //uat click to pay
-    //val orkestapay = OrkestapayClient("mch_38c8cb7eeb054c6f90eac00d71542e5f", "pk_test_zls6cvk02ppsjqnqj2cm0tiwewrn4d5f", false)
-    //sand click to pay
-    //val orkestapay = OrkestapayClient("mch_89d235df1c944396808a73564883cde7", "pk_test_s2jtj1klwwmijfj1vyuvsult466hj5n5", false)
-
-
-    //val orkestapay = OrkestapayClient("mch_d58cbba060ac411289c160f336c8c41b", "pk_test_h2gn9ksk8q7mfhovweviyjp93b7zcgus", false)
-    //var orkestapay = OrkestapayClient("mch_e33f6f87ec5b47d1a41519f4ed3fcf53", "pk_test_vywzkgf0im78h6fpdr22nx322x98ae2z", false)
-    val orkestapay = OrkestapayClient("mch_591bbfb20c324605877afc9b01d715c3", "pk_test_c50ogjsxw0uhir2wc9kx0uxily0kzwj2",  false)
-    var deviceSessionId by remember { mutableStateOf("") }
-    var googlePaymentMethod by remember { mutableStateOf("") }
-    var click2PayPaymentMethod by remember { mutableStateOf("") }
-    var btnGoogleIsVisible by remember { mutableStateOf(false) }
-    val frameLayout = FrameLayout(ctx).apply {
-        layoutParams = ViewGroup.LayoutParams(1, 1)
-        visibility = View.INVISIBLE
-    }
-
-
-    orkestapay.googlePaySetup(ctx, object : GooglePayCallback{
-        override fun onReady(isReady: Boolean) {
-            Log.d("onReady", isReady.toString())
-            btnGoogleIsVisible = isReady
-        }
-
-        override fun onSuccess(paymentMethod: PaymentMethodResponse) {
-            Log.d("onSuccess", paymentMethod.toString())
-            googlePaymentMethod = paymentMethod.paymentMethodId
-        }
-
-        override fun onCancel() {
-            Log.d("onCancel", "onCancel")
-        }
-
-        override fun onError(error: String) {
-            Log.d("onError google pay", error)
-        }
-
-    })
-
-    orkestapay.creteDeviceSession(ctx, frameLayout, object : DeviceSessionListener{
-        override fun onSuccess(deviceSession: String) {
-            Log.d("device_session_id", deviceSession)
-            deviceSessionId = deviceSession
-        }
-
-        override fun onError(error: String) {
-            Log.d("error", error)
-        }
-    })
-
-    OrkestapayandroidTheme {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-            verticalArrangement =  Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-
-            Button(onClick = {
-                orkestapay.creteDeviceSession(ctx, frameLayout, object : DeviceSessionListener{
-                    override fun onSuccess(deviceSession: String) {
-                        Log.d("device_session_id", deviceSession)
-                        deviceSessionId = deviceSession
-                    }
-
-                    override fun onError(error: String) {
-                        Log.d("error", error)
-                    }
-                })
-            }) {
-                Text(text = "Get Session Id")
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Text(deviceSessionId)
-
-            Spacer(Modifier.height(16.dp))
-
-            Button(onClick = {
-                val card = Card("4111111111111111", "12", "2025", "123", "Héctor Rdz", true)
-                //val billingAddress = BillingAddress(null, null, null, null, null, "Av. Tecnológico 123", null, "Querétaro", "Querétaro", "MX", "76127")
-                val paymentMethod = PaymentMethod("test card",null, deviceSessionId, PaymentMethodType.CARD, card)
-                orkestapay.createPaymentMethod(paymentMethod, object : PaymentMethodListener {
-                    override fun onSuccess(paymentMethod: PaymentMethodResponse) {
-                        Log.d("response", paymentMethod.toString())
-                    }
-
-                    override fun onError(error: OrkestapayError) {
-                        Log.e("error", error.toString())
-                    }
-                })
-            }) {
-                Text(text = "Create payment method")
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Button(onClick = {
-                orkestapay.getPromotions("477291", "MXN", "1000", object : PromotionsListener{
-                    override fun onSuccess(promotions: List<PromotionsResponse>) {
-                        Log.d("response", promotions.toString())
-                    }
-
-                    override fun onError(error: OrkestapayError) {
-                        Log.e("error", error.toString())
-                    }
-                })
-            }) {
-                Text(text = "Get promotions")
-            }
-
-            Spacer(Modifier.height(25.dp))
-
-            if(btnGoogleIsVisible) {
-                PayButton(
-                    modifier = Modifier
-                        .fillMaxWidth().padding(16.dp, 10.dp),
-
-                    onClick = {
-                        val googlePayData = GooglePayData("2836.02", "MXN", "MX", true)
-                        orkestapay.googlePayCheckout(googlePayData)
-                    },
-                    allowedPaymentMethods = GooglePayUtil.allowedPaymentMethods(orkestapay.googlePaymentMethodData!!.properties.gateway, orkestapay.googlePaymentMethodData!!.properties.merchantId).toString()
-                )
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Text(googlePaymentMethod)
-
-            Spacer(Modifier.height(20.dp))
-
-            Button(onClick = {
-                val clickToPay = ClickToPay("orkestapay.user15@yopmail.com", "John", "Doe", "52", "4411223344", "100", "MXN")
-                orkestapay.clickToPayCheckout(ctx, clickToPay, object : ClickToPayCallback{
-                    override fun onSuccess(paymentMethod: PaymentMethodResponse) {
-                       Log.d("onSuccess", paymentMethod.toString())
-                        click2PayPaymentMethod = paymentMethod.paymentMethodId
-                    }
-
-                    override fun onClosed() {
-                        Log.d("onClosed", "closed")
-                    }
-
-                    override fun onError(error: String) {
-                        Log.d("onError", error)
-                    }
-                })
-            }) {
-                Text(text = "Click To Pay")
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Text(click2PayPaymentMethod)
-
-            Spacer(Modifier.height(20.dp))
         }
     }
 }
