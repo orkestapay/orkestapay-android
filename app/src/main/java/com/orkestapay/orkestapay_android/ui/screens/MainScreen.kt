@@ -134,19 +134,10 @@ fun MainScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
 
-        OutlinedTextField(amountText,
-            onValueChange = { newValue ->
-                if (newValue.isEmpty() || newValue.matches(Regex("""^\d*\.?\d*$"""))) {
-                    amountText = newValue
-                }},
-            label = { Text("Monto") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Next
-            )
-        )
+        Text("Información de contacto", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
 
         OutlinedTextField(name,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { name = it },
             label = { Text("Nombre") },
             keyboardOptions = KeyboardOptions(
@@ -156,6 +147,7 @@ fun MainScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(lastName,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { lastName = it },
             label = { Text("Apellido") },
             keyboardOptions = KeyboardOptions(
@@ -166,6 +158,7 @@ fun MainScreen(navController: NavHostController) {
 
         OutlinedTextField(email,
             onValueChange = { email = it },
+            modifier = Modifier.fillMaxWidth(),
             label = { Text("Correo electrónico") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -174,6 +167,7 @@ fun MainScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(phone,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { newText ->
                 if (newText.length <= 10) {
                     phone = newText
@@ -182,6 +176,19 @@ fun MainScreen(navController: NavHostController) {
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Done
+            )
+        )
+
+        OutlinedTextField(amountText,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(Regex("""^\d*\.?\d*$"""))) {
+                    amountText = newValue
+                }},
+            label = { Text("Monto") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next
             )
         )
 
@@ -210,7 +217,7 @@ fun MainScreen(navController: NavHostController) {
                     painter = painterResource(R.drawable.click_to_pay),
                     contentDescription = null
                 )
-                Text("Credit/Debit")
+                Text("Crédito/Débito")
                 Spacer(
                     modifier = Modifier.weight(1f)
                 )
