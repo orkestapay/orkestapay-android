@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.orkestapay.orkestapay.client.OrkestapayClient
 import com.orkestapay.orkestapay.client.enums.PaymentMethodType
 import com.orkestapay.orkestapay.client.model.PaymentMethodResponse
@@ -404,5 +405,5 @@ fun MainScreen(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewScreen() {
-    //MainScreen()
+    MainScreen(rememberNavController())
 }

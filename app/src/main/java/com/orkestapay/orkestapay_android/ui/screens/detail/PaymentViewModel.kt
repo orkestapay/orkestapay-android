@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class PaymentViewModel(private val repository: PaymentRepository) : ViewModel() {
     var state by mutableStateOf<Resource<SuccessResponse>?>(null)
-        private set
 
     fun loadProducts(amount: String, email: String, paymentMethodId: String, deviceSession: String) {
         viewModelScope.launch {
