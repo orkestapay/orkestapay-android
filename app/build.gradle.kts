@@ -11,15 +11,15 @@ android {
         }
     }
 
-    namespace = "com.orkestapay.orkestapay_android"
-    compileSdk = 34
+    namespace = "tech.tcpip.orkestapay_android"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.orkestapay.orkestapay_android"
+        applicationId = "tech.tcpip.orkestapay_android"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 4
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
