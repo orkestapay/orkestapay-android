@@ -23,9 +23,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -38,8 +48,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,6 +98,8 @@ fun MainScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var paymentMethod by remember { mutableStateOf(PaymentMethodType.CLICK_TO_PAY) }
+    var showClickToPayInfo by remember { mutableStateOf(false) }
+    var showPhoneInfoModal by remember { mutableStateOf(false) }
 
     val isFormValid by remember {
         derivedStateOf {
@@ -192,6 +209,38 @@ fun MainScreen(navController: NavHostController) {
             )
         )
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .padding(top = 10.dp)
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(SpanStyle(color = Color(0xFFCC0000), textDecoration = TextDecoration.Underline)) {
+                        append("¿Cómo utiliza Click to Pay mi información?")
+                    }
+                },
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { showClickToPayInfo = true }
+            )
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Más información",
+                tint = Color(0xFFCC0000),
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { showPhoneInfoModal = true }
+            )
+        }
+
         Column(
             modifier = Modifier.padding(top = 20.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)
@@ -279,6 +328,130 @@ fun MainScreen(navController: NavHostController) {
                 )
                 Text("Payment method B")
             }
+        }
+
+        if (showClickToPayInfo) {
+            AlertDialog(
+                onDismissRequest = { showClickToPayInfo = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .background(Color.White, RoundedCornerShape(16.dp)),
+                confirmButton = {
+                    Button(
+                        onClick = { showClickToPayInfo = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                    ) {
+                        Text("OK", color = Color.White, fontWeight = FontWeight.SemiBold)
+                    }
+                },
+                title = null,
+                text = {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Te damos la bienvenida a",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text(
+                            text = "Click to Pay",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFCC0000)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Un método de pago rápido y seguro que aceptan Mastercard, Visa, American Express y Discover",
+                            fontSize = 14.sp,
+                            color = Color.DarkGray
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.click_to_pay),
+                                contentDescription = "Click to Pay",
+                                modifier = Modifier.height(24.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .width(1.dp)
+                                    .height(24.dp)
+                                    .background(Color.LightGray)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.mastercard),
+                                contentDescription = "Mastercard",
+                                modifier = Modifier.height(24.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.visa),
+                                contentDescription = "Visa",
+                                modifier = Modifier.height(24.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.amex),
+                                contentDescription = "Amex",
+                                modifier = Modifier.height(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("•", fontWeight = FontWeight.Bold)
+                                Text("Protege tu información", fontSize = 14.sp)
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("•", fontWeight = FontWeight.Bold)
+                                Text("Úsalo en comercios de todo el mundo", fontSize = 14.sp)
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("•", fontWeight = FontWeight.Bold)
+                                Text("Configúralo una sola vez para hacer pagos fácilmente en el futuro", fontSize = 14.sp)
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        if (showPhoneInfoModal) {
+            AlertDialog(
+                onDismissRequest = { showPhoneInfoModal = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .background(Color.White, RoundedCornerShape(16.dp)),
+                confirmButton = {
+                    Button(
+                        onClick = { showPhoneInfoModal = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                    ) {
+                        Text("OK", color = Color.White, fontWeight = FontWeight.SemiBold)
+                    }
+                },
+                title = null,
+                text = {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Click to Pay usará tu número telefónico para verificar si tienes tarjetas guardadas.\n\nSe enviará un código de verificación al número que proporciones para confirmar que es tuyo.",
+                            fontSize = 14.sp,
+                            color = Color.DarkGray
+                        )
+                    }
+                }
+            )
         }
 
         Button(onClick = {
