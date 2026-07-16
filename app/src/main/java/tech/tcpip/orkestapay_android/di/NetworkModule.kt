@@ -23,7 +23,7 @@ object NetworkModule {
 
     val api: PaymentsApi by lazy {
         Retrofit.Builder()
-            .baseUrl("https://checkout.sbox.orkestapay.com/")
+            .baseUrl("https://checkout.sand.orkestapay.com/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
